@@ -7,7 +7,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_HOST=db
+      - DB_HOST=${DB_HOST}
       - DB_PORT=5432
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -17,7 +17,7 @@ services:
       - db
 
   db:
-    container_name: sass-eventos
+    container_name: sass-events
     image: postgres:14.3
     restart: always
     ports:
