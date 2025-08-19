@@ -1,15 +1,30 @@
+version: '3.8'
 
 services:
+  api:
+    build: .
+    container_name: nest-api
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - PORT=3000
+    depends_on:
+      - db
+
   db:
     container_name: sass-eventos
     image: postgres:14.3
     restart: always
     ports:
-      - ${DB_PORT}:5432
+      - "5432:5432"
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
-    
     volumes:
       - ./postgres:/var/lib/postgresql/data

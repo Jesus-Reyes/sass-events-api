@@ -8,6 +8,7 @@ Esta API proporciona endpoints para gestionar:
 - **Geography Catalogo**: Catálogo de geografías
 - **BU Catalogo**: Catálogo de Business Units
 - **CFS Catalogo**: Catálogo de CFS (Critical Financial Services)
+- **Disciplinas Catalogo**: Catálogo de disciplinas que agrupan múltiples CFS
 
 ## Instalación
 
@@ -547,6 +548,204 @@ DELETE http://localhost:3000/cfs-catalogo/1
 }
 ```
 
+### 4. Disciplinas Catalogo
+
+#### POST /disciplinas-catalogo
+**Descripción**: Crear una nueva disciplina con múltiples CFS asociados
+```
+POST http://localhost:3000/disciplinas-catalogo
+Content-Type: application/json
+
+{
+  "name": "Risk Management",
+  "cfsIds": [1, 2, 3],
+  "active": true
+}
+```
+
+**Respuesta Ejemplo:**
+```json
+{
+  "status": 201,
+  "data": {
+    "id": 1,
+    "name": "Risk Management",
+    "active": true,
+    "cfsItems": [
+      {
+        "id": 1,
+        "name": "Pagos Digitales",
+        "campoN1": "Servicios de Pago",
+        "campoN2": "Digital",
+        "buCatalogo": {
+          "id": 1,
+          "name": "Digital Banking Spain",
+          "geography": {
+            "id": 1,
+            "name": "España",
+            "code": "ES"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "name": "Bizum",
+        "campoN1": "Transferencias P2P",
+        "campoN2": "Instantáneo",
+        "buCatalogo": {
+          "id": 1,
+          "name": "Digital Banking Spain",
+          "geography": {
+            "id": 1,
+            "name": "España",
+            "code": "ES"
+          }
+        }
+      }
+    ],
+    "createdAt": "2025-08-19T12:00:00.000Z",
+    "updatedAt": "2025-08-19T12:00:00.000Z"
+  },
+  "message": "Disciplina creada exitosamente"
+}
+```
+
+#### GET /disciplinas-catalogo
+**Descripción**: Obtener todas las disciplinas con sus CFS asociados
+```
+GET http://localhost:3000/disciplinas-catalogo
+```
+
+**Respuesta Ejemplo:**
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": 1,
+      "name": "Risk Management",
+      "active": true,
+      "cfsItems": [
+        {
+          "id": 1,
+          "name": "Pagos Digitales",
+          "campoN1": "Servicios de Pago",
+          "campoN2": "Digital",
+          "buCatalogo": {
+            "id": 1,
+            "name": "Digital Banking Spain",
+            "geography": {
+              "id": 1,
+              "name": "España",
+              "code": "ES"
+            }
+          }
+        }
+      ],
+      "createdAt": "2025-08-19T12:00:00.000Z",
+      "updatedAt": "2025-08-19T12:00:00.000Z"
+    }
+  ],
+  "message": "Disciplinas obtenidas exitosamente"
+}
+```
+
+#### GET /disciplinas-catalogo/:id
+**Descripción**: Obtener una disciplina por ID con todos sus CFS
+```
+GET http://localhost:3000/disciplinas-catalogo/1
+```
+
+**Respuesta Ejemplo:**
+```json
+{
+  "status": 200,
+  "data": {
+    "id": 1,
+    "name": "Risk Management",
+    "active": true,
+    "cfsItems": [
+      {
+        "id": 1,
+        "name": "Pagos Digitales",
+        "campoN1": "Servicios de Pago",
+        "campoN2": "Digital",
+        "buCatalogo": {
+          "id": 1,
+          "name": "Digital Banking Spain",
+          "geography": {
+            "id": 1,
+            "name": "España",
+            "code": "ES"
+          }
+        }
+      }
+    ],
+    "createdAt": "2025-08-19T12:00:00.000Z",
+    "updatedAt": "2025-08-19T12:00:00.000Z"
+  },
+  "message": "Disciplina obtenida exitosamente"
+}
+```
+
+#### PATCH /disciplinas-catalogo/:id
+**Descripción**: Actualizar una disciplina (nombre y/o CFS asociados)
+```
+PATCH http://localhost:3000/disciplinas-catalogo/1
+Content-Type: application/json
+
+{
+  "name": "Advanced Risk Management",
+  "cfsIds": [1, 2, 3, 4]
+}
+```
+
+**Respuesta Ejemplo:**
+```json
+{
+  "status": 200,
+  "data": {
+    "id": 1,
+    "name": "Advanced Risk Management",
+    "active": true,
+    "cfsItems": [
+      {
+        "id": 1,
+        "name": "Pagos Digitales",
+        "campoN1": "Servicios de Pago",
+        "campoN2": "Digital",
+        "buCatalogo": {
+          "id": 1,
+          "name": "Digital Banking Spain",
+          "geography": {
+            "id": 1,
+            "name": "España",
+            "code": "ES"
+          }
+        }
+      }
+    ],
+    "createdAt": "2025-08-19T12:00:00.000Z",
+    "updatedAt": "2025-08-19T12:30:00.000Z"
+  },
+  "message": "Disciplina actualizada exitosamente"
+}
+```
+
+#### DELETE /disciplinas-catalogo/:id
+**Descripción**: Eliminar una disciplina
+```
+DELETE http://localhost:3000/disciplinas-catalogo/1
+```
+
+**Respuesta Ejemplo:**
+```json
+{
+  "status": 200,
+  "message": "Disciplina eliminada exitosamente"
+}
+```
+
 ## Ejemplos de Flujo Completo
 
 ### Escenario 1: Crear CFS desde cero
@@ -596,6 +795,29 @@ GET http://localhost:3000/bu-catalogo
 2. **Seleccionar una BU y obtener sus CFS**
 ```
 GET http://localhost:3000/cfs-catalogo/by-bu/1
+```
+
+### Escenario 3: Crear Disciplina con múltiples CFS
+
+1. **Obtener todos los CFS disponibles**
+```
+GET http://localhost:3000/cfs-catalogo
+```
+
+2. **Crear disciplina con CFS seleccionados**
+```
+POST http://localhost:3000/disciplinas-catalogo
+Content-Type: application/json
+
+{
+  "name": "Operational Risk",
+  "cfsIds": [1, 2, 3]
+}
+```
+
+3. **Verificar la disciplina creada con sus CFS**
+```
+GET http://localhost:3000/disciplinas-catalogo/1
 ```
 
 ## Respuestas de la API
@@ -916,6 +1138,86 @@ Para facilitar las pruebas, puedes importar la siguiente colección JSON en Post
           }
         }
       ]
+    },
+    {
+      "name": "Disciplinas Catalogo",
+      "item": [
+        {
+          "name": "Crear Disciplina",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Risk Management\",\n  \"cfsIds\": [1, 2, 3]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo"]
+            }
+          }
+        },
+        {
+          "name": "Obtener todas las Disciplinas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Disciplina por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo/{{disciplinaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo", "{{disciplinaId}}"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Disciplina",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Advanced Risk Management\",\n  \"cfsIds\": [1, 2, 3, 4]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo/{{disciplinaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo", "{{disciplinaId}}"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Disciplina",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo/{{disciplinaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo", "{{disciplinaId}}"]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -935,6 +1237,7 @@ Crea las siguientes variables en tu entorno de Postman:
 - `geographyId`: `1` (ID de geografía existente)
 - `buId`: `1` (ID de BU existente)
 - `cfsId`: `1` (ID de CFS existente)
+- `disciplinaId`: `1` (ID de disciplina existente)
 
 ## Validaciones
 
@@ -955,6 +1258,11 @@ Crea las siguientes variables en tu entorno de Postman:
 - **buId**: Requerido, debe ser un número positivo y existir en la base de datos
 - **active**: Opcional, por defecto `true`
 
+### Disciplinas Catalogo
+- **name**: Requerido, máximo 100 caracteres, único
+- **cfsIds**: Requerido, array de números positivos, mínimo 1 elemento, todos deben existir y estar activos en la base de datos
+- **active**: Opcional, por defecto `true`
+
 ## Estructura de Base de Datos
 
 ### Tabla: cfs_catalogos
@@ -968,6 +1276,26 @@ CREATE TABLE cfs_catalogos (
   active BOOLEAN DEFAULT true,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Tabla: disciplinas_catalogos
+```sql
+CREATE TABLE disciplinas_catalogos (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Tabla de relación: disciplina_cfs
+```sql
+CREATE TABLE disciplina_cfs (
+  disciplina_id INTEGER NOT NULL REFERENCES disciplinas_catalogos(id) ON DELETE CASCADE,
+  cfs_id INTEGER NOT NULL REFERENCES cfs_catalogos(id) ON DELETE CASCADE,
+  PRIMARY KEY (disciplina_id, cfs_id)
 );
 ```
 

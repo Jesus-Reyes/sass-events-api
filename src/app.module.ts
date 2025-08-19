@@ -4,6 +4,7 @@ import { envs } from './environments/environment.dev';
 import { BuCatalogoModule } from './api/bu-catalogo/bu-catalogo.module';
 import { GeographyCatalogoModule } from './api/geography-catalogo/geography-catalogo.module';
 import { CfsCatalogoModule } from './api/cfs-catalogo/cfs-catalogo.module';
+import { DisciplinaCatalogoModule } from './api/disciplinas-catalogo/disciplina-catalogo.module';
 
 
 
@@ -28,6 +29,8 @@ import { CfsCatalogoModule } from './api/cfs-catalogo/cfs-catalogo.module';
     GeographyCatalogoModule,
 
     CfsCatalogoModule,
+
+    DisciplinaCatalogoModule,
 
     
 
