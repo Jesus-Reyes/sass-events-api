@@ -1,0 +1,866 @@
+{
+  "info": {
+    "name": "SASS Eventos API",
+    "description": "Colección completa para probar todos los endpoints de la API de catálogos SASS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "geographyId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "buId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "cfsId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "disciplinaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "statusModeloId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "modeloContribuyenteId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Geography Catalogo",
+      "item": [
+        {
+          "name": "Crear Geografía",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Colombia\",\n  \"code\": \"CO\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/geography",
+              "host": ["{{baseUrl}}"],
+              "path": ["geography"]
+            },
+            "description": "Crear una nueva geografía en el sistema"
+          }
+        },
+        {
+          "name": "Obtener todas las Geografías",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/geography",
+              "host": ["{{baseUrl}}"],
+              "path": ["geography"]
+            },
+            "description": "Obtener listado completo de geografías"
+          }
+        },
+        {
+          "name": "Obtener Geografía por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/geography/{{geographyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["geography", "{{geographyId}}"]
+            },
+            "description": "Obtener una geografía específica con sus Business Units"
+          }
+        },
+        {
+          "name": "Actualizar Geografía",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"España Updated\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/geography/{{geographyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["geography", "{{geographyId}}"]
+            },
+            "description": "Actualizar información de una geografía existente"
+          }
+        },
+        {
+          "name": "Eliminar Geografía",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/geography/{{geographyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["geography", "{{geographyId}}"]
+            },
+            "description": "Eliminar una geografía del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "BU Catalogo",
+      "item": [
+        {
+          "name": "Crear Business Unit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Digital Banking Spain\",\n  \"geographyId\": {{geographyId}},\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bu-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["bu-catalogo"]
+            },
+            "description": "Crear una nueva Business Unit asociada a una geografía"
+          }
+        },
+        {
+          "name": "Obtener todos los Business Units",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bu-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["bu-catalogo"]
+            },
+            "description": "Obtener listado completo de Business Units con sus geografías"
+          }
+        },
+        {
+          "name": "Obtener Business Unit por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bu-catalogo/{{buId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bu-catalogo", "{{buId}}"]
+            },
+            "description": "Obtener información detallada de una Business Unit específica"
+          }
+        },
+        {
+          "name": "Actualizar Business Unit",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Digital Banking Spain Updated\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bu-catalogo/{{buId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bu-catalogo", "{{buId}}"]
+            },
+            "description": "Actualizar información de una Business Unit"
+          }
+        },
+        {
+          "name": "Eliminar Business Unit",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/bu-catalogo/{{buId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bu-catalogo", "{{buId}}"]
+            },
+            "description": "Eliminar una Business Unit del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "CFS Catalogo",
+      "item": [
+        {
+          "name": "Crear CFS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bizum\",\n  \"campoN1\": \"Transferencias Instantáneas\",\n  \"campoN2\": \"P2P\",\n  \"buId\": {{buId}},\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cfs-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["cfs-catalogo"]
+            },
+            "description": "Crear un nuevo CFS asociado a una Business Unit"
+          }
+        },
+        {
+          "name": "Obtener todos los CFS",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/cfs-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["cfs-catalogo"]
+            },
+            "description": "Obtener listado completo de CFS con sus relaciones"
+          }
+        },
+        {
+          "name": "Obtener CFS por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/cfs-catalogo/{{cfsId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["cfs-catalogo", "{{cfsId}}"]
+            },
+            "description": "Obtener información detallada de un CFS específico"
+          }
+        },
+        {
+          "name": "Obtener CFS por BU (Filtro)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/cfs-catalogo/by-bu/{{buId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["cfs-catalogo", "by-bu", "{{buId}}"]
+            },
+            "description": "Obtener todos los CFS de una Business Unit específica"
+          }
+        },
+        {
+          "name": "Actualizar CFS",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bizum Premium\",\n  \"campoN1\": \"Transferencias Instantáneas Premium\",\n  \"campoN2\": \"P2P Premium\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cfs-catalogo/{{cfsId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["cfs-catalogo", "{{cfsId}}"]
+            },
+            "description": "Actualizar información de un CFS existente"
+          }
+        },
+        {
+          "name": "Eliminar CFS",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/cfs-catalogo/{{cfsId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["cfs-catalogo", "{{cfsId}}"]
+            },
+            "description": "Eliminar un CFS del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Disciplinas Catalogo",
+      "item": [
+        {
+          "name": "Crear Disciplina",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Risk Management\",\n  \"cfsIds\": [1, 2, 3],\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo"]
+            },
+            "description": "Crear una nueva disciplina asociando múltiples CFS"
+          }
+        },
+        {
+          "name": "Obtener todas las Disciplinas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo"]
+            },
+            "description": "Obtener listado completo de disciplinas con sus CFS"
+          }
+        },
+        {
+          "name": "Obtener Disciplina por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo/{{disciplinaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo", "{{disciplinaId}}"]
+            },
+            "description": "Obtener información detallada de una disciplina específica"
+          }
+        },
+        {
+          "name": "Actualizar Disciplina",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Advanced Risk Management\",\n  \"cfsIds\": [1, 2, 3, 4]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo/{{disciplinaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo", "{{disciplinaId}}"]
+            },
+            "description": "Actualizar información de una disciplina y sus CFS asociados"
+          }
+        },
+        {
+          "name": "Eliminar Disciplina",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/disciplinas-catalogo/{{disciplinaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["disciplinas-catalogo", "{{disciplinaId}}"]
+            },
+            "description": "Eliminar una disciplina del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Status Modelo Catalogo",
+      "item": [
+        {
+          "name": "Crear Status Modelo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"En Revisión\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/status-modelo-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-modelo-catalogo"]
+            },
+            "description": "Crear un nuevo estado para modelos del sistema"
+          }
+        },
+        {
+          "name": "Obtener todos los Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/status-modelo-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-modelo-catalogo"]
+            },
+            "description": "Obtener listado completo de estados de modelos"
+          }
+        },
+        {
+          "name": "Obtener Status Activos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/status-modelo-catalogo/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-modelo-catalogo", "active"]
+            },
+            "description": "Obtener solo los estados activos (ideal para dropdowns)"
+          }
+        },
+        {
+          "name": "Obtener Status por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/status-modelo-catalogo/{{statusModeloId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-modelo-catalogo", "{{statusModeloId}}"]
+            },
+            "description": "Obtener información de un estado específico"
+          }
+        },
+        {
+          "name": "Actualizar Status Modelo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"En Proceso de Revisión\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/status-modelo-catalogo/{{statusModeloId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-modelo-catalogo", "{{statusModeloId}}"]
+            },
+            "description": "Actualizar información de un estado de modelo"
+          }
+        },
+        {
+          "name": "Toggle Estado Activo",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/status-modelo-catalogo/{{statusModeloId}}/toggle-active",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-modelo-catalogo", "{{statusModeloId}}", "toggle-active"]
+            },
+            "description": "Alternar estado activo/inactivo de un status"
+          }
+        },
+        {
+          "name": "Eliminar Status Modelo",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/status-modelo-catalogo/{{statusModeloId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-modelo-catalogo", "{{statusModeloId}}"]
+            },
+            "description": "Eliminar un estado de modelo del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Modelo Contribuyente",
+      "item": [
+        {
+          "name": "Crear Modelo Contribuyente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cliente Premium\",\n  \"description\": \"Cliente con servicios premium y alto volumen de transacciones\",\n  \"cfsId\": {{cfsId}},\n  \"statusModeloId\": {{statusModeloId}},\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente"]
+            },
+            "description": "Crear un nuevo modelo de contribuyente asociado a un CFS"
+          }
+        },
+        {
+          "name": "Obtener todos los Modelos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente"]
+            },
+            "description": "Obtener listado completo de modelos de contribuyente"
+          }
+        },
+        {
+          "name": "Obtener Modelo por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente/{{modeloContribuyenteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}"]
+            },
+            "description": "Obtener información detallada de un modelo específico"
+          }
+        },
+        {
+          "name": "Obtener Modelos por CFS",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente/by-cfs/{{cfsId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente", "by-cfs", "{{cfsId}}"]
+            },
+            "description": "Obtener todos los modelos de contribuyente de un CFS específico"
+          }
+        },
+        {
+          "name": "Obtener Modelos por Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente/by-status/{{statusModeloId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente", "by-status", "{{statusModeloId}}"]
+            },
+            "description": "Obtener todos los modelos con un estado específico"
+          }
+        },
+        {
+          "name": "Actualizar Modelo Contribuyente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cliente Premium Plus\",\n  \"description\": \"Cliente premium con servicios exclusivos y beneficios adicionales\",\n  \"statusModeloId\": 2,\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente/{{modeloContribuyenteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}"]
+            },
+            "description": "Actualizar información de un modelo de contribuyente"
+          }
+        },
+        {
+          "name": "Cambiar Status del Modelo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statusModeloId\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente/{{modeloContribuyenteId}}/change-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}", "change-status"]
+            },
+            "description": "Cambiar solo el estado de un modelo de contribuyente"
+          }
+        },
+        {
+          "name": "Eliminar Modelo Contribuyente",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente/{{modeloContribuyenteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}"]
+            },
+            "description": "Eliminar un modelo de contribuyente del sistema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flujos de Trabajo Completos",
+      "item": [
+        {
+          "name": "Flujo 1: Crear CFS desde cero",
+          "item": [
+            {
+              "name": "1. Crear Geografia",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"España\",\n  \"code\": \"ES\",\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/geography",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["geography"]
+                }
+              }
+            },
+            {
+              "name": "2. Crear Business Unit",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"BBVA Digital España\",\n  \"geographyId\": 1,\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/bu-catalogo",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["bu-catalogo"]
+                }
+              }
+            },
+            {
+              "name": "3. Crear CFS",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Bizum\",\n  \"campoN1\": \"Transferencias Instantáneas\",\n  \"campoN2\": \"P2P\",\n  \"buId\": 1,\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/cfs-catalogo",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["cfs-catalogo"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Flujo 2: Crear Disciplina con CFS",
+          "item": [
+            {
+              "name": "1. Obtener CFS disponibles",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/cfs-catalogo",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["cfs-catalogo"]
+                }
+              }
+            },
+            {
+              "name": "2. Crear Disciplina",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Operational Risk\",\n  \"cfsIds\": [1, 2, 3],\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/disciplinas-catalogo",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["disciplinas-catalogo"]
+                }
+              }
+            },
+            {
+              "name": "3. Verificar Disciplina",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/disciplinas-catalogo/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["disciplinas-catalogo", "1"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Flujo 3: Gestión de Modelos de Contribuyente",
+          "item": [
+            {
+              "name": "1. Crear Status Modelo",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Borrador\",\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/status-modelo-catalogo",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["status-modelo-catalogo"]
+                }
+              }
+            },
+            {
+              "name": "2. Crear Modelo Contribuyente",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Cliente Retail\",\n  \"description\": \"Cliente individual con servicios básicos\",\n  \"cfsId\": 1,\n  \"statusModeloId\": 1,\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-contribuyente",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-contribuyente"]
+                }
+              }
+            },
+            {
+              "name": "3. Cambiar Status a Aprobado",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"statusModeloId\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-contribuyente/1/change-status",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-contribuyente", "1", "change-status"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Script global para configurar headers comunes",
+          "pm.request.headers.add({",
+          "    key: 'Accept',",
+          "    value: 'application/json'",
+          "});"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Tests globales para todas las respuestas",
+          "pm.test('Status code should be successful', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202, 204]);",
+          "});",
+          "",
+          "pm.test('Response should be JSON', function () {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});",
+          "",
+          "pm.test('Response should have correct structure', function () {",
+          "    const responseJson = pm.response.json();",
+          "    pm.expect(responseJson).to.have.property('status');",
+          "    if (pm.response.code !== 204) {",
+          "        pm.expect(responseJson).to.have.property('message');",
+          "    }",
+          "});"
+        ]
+      }
+    }
+  ]
+}
