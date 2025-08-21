@@ -1,11 +1,11 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DisciplinaCatalogo } from '../entities/disciplina-catalogo.entity';
 import { CfsCatalogo } from '../../cfs-catalogo/entities/cfs-catalogo.entity';
 
 @Injectable()
-export class DisciplinaCatalogoSeedService implements OnModuleInit {
+export class DisciplinaCatalogoSeedService {
   private readonly logger = new Logger(DisciplinaCatalogoSeedService.name);
 
   constructor(
@@ -15,7 +15,7 @@ export class DisciplinaCatalogoSeedService implements OnModuleInit {
     private readonly cfsCatalogoRepository: Repository<CfsCatalogo>,
   ) {}
 
-  async onModuleInit() {
+  async executeSeed() {
     await this.seedDisciplinaCatalogos();
   }
 

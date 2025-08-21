@@ -9,6 +9,6 @@ import { StatusModeloCatalogo } from './entities/status-modelo-catalogo.entity';
   imports: [TypeOrmModule.forFeature([StatusModeloCatalogo])],
   controllers: [StatusModeloCatalogoController],
   providers: [StatusModeloCatalogoService, StatusModeloCatalogoSeedService],
-  exports: [StatusModeloCatalogoService],
+  exports: [StatusModeloCatalogoService, StatusModeloCatalogoSeedService],
 })
 export class StatusModeloCatalogoModule {}

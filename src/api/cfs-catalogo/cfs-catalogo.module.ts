@@ -10,6 +10,6 @@ import { BuCatalogo } from '../bu-catalogo/entities/bu-catalogo.entity';
   imports: [TypeOrmModule.forFeature([CfsCatalogo, BuCatalogo])],
   controllers: [CfsCatalogoController],
   providers: [CfsCatalogoService, CfsCatalogoSeedService],
-  exports: [CfsCatalogoService],
+  exports: [CfsCatalogoService, CfsCatalogoSeedService],
 })
 export class CfsCatalogoModule {}

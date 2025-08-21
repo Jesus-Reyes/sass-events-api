@@ -14,6 +14,6 @@ import { Geography } from '../geography-catalogo/entities/geography.entity';
   ],
   controllers: [BuCatalogoController],
   providers: [BuCatalogoService, BuCatalogoSeedService],
-  exports: [BuCatalogoService]
+  exports: [BuCatalogoService, BuCatalogoSeedService]
 })
 export class BuCatalogoModule { }

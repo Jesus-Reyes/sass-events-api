@@ -17,6 +17,6 @@ import { StatusModeloCatalogo } from '../status-modelo-catalogo/entities/status-
   ],
   controllers: [ModeloContribuyenteController],
   providers: [ModeloContribuyenteService, ModeloContribuyenteSeedService],
-  exports: [ModeloContribuyenteService]
+  exports: [ModeloContribuyenteService, ModeloContribuyenteSeedService]
 })
 export class ModeloContribuyenteModule {}

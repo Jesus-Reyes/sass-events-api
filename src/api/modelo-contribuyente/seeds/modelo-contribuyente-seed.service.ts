@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ModeloContribuyente } from '../entities/modelo-contribuyente.entity';
@@ -6,7 +6,7 @@ import { CfsCatalogo } from '../../cfs-catalogo/entities/cfs-catalogo.entity';
 import { StatusModeloCatalogo } from '../../status-modelo-catalogo/entities/status-modelo-catalogo.entity';
 
 @Injectable()
-export class ModeloContribuyenteSeedService implements OnModuleInit {
+export class ModeloContribuyenteSeedService {
   private readonly logger = new Logger(ModeloContribuyenteSeedService.name);
 
   constructor(
@@ -18,7 +18,7 @@ export class ModeloContribuyenteSeedService implements OnModuleInit {
     private readonly statusModeloCatalogoRepository: Repository<StatusModeloCatalogo>,
   ) {}
 
-  async onModuleInit() {
+  async executeSeed() {
     await this.seedModeloContribuyentes();
   }
 

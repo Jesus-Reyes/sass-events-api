@@ -1,11 +1,11 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BuCatalogo } from '../entities/bu-catalogo.entity';
 import { Geography } from '../../geography-catalogo/entities/geography.entity';
 
 @Injectable()
-export class BuCatalogoSeedService implements OnModuleInit {
+export class BuCatalogoSeedService {
   private readonly logger = new Logger(BuCatalogoSeedService.name);
 
   constructor(
@@ -15,7 +15,7 @@ export class BuCatalogoSeedService implements OnModuleInit {
     private readonly geographyRepository: Repository<Geography>,
   ) {}
 
-  async onModuleInit() {
+  async executeSeed() {
     await this.seedBuCatalogos();
   }
 

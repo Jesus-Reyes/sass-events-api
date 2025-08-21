@@ -10,6 +10,6 @@ import { CfsCatalogo } from '../cfs-catalogo/entities/cfs-catalogo.entity';
   imports: [TypeOrmModule.forFeature([DisciplinaCatalogo, CfsCatalogo])],
   controllers: [DisciplinaCatalogoController],
   providers: [DisciplinaCatalogoService, DisciplinaCatalogoSeedService],
-  exports: [DisciplinaCatalogoService],
+  exports: [DisciplinaCatalogoService, DisciplinaCatalogoSeedService],
 })
 export class DisciplinaCatalogoModule {}

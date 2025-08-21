@@ -8,6 +8,7 @@ import { DisciplinaCatalogoModule } from './api/disciplinas-catalogo/disciplina-
 import { ModeloContribuyenteModule } from './api/modelo-contribuyente/modelo-contribuyente.module';
 import { StatusModeloCatalogoModule } from './api/status-modelo-catalogo/status-modelo-catalogo.module';
 import { RollbackModule } from './api/rollback/rollback.module';
+import { SeedModule } from './common/seeds/seed.module';
 
 
 
@@ -43,6 +44,8 @@ import { RollbackModule } from './api/rollback/rollback.module';
     StatusModeloCatalogoModule,
 
     RollbackModule,
+
+    SeedModule,
 
     
 

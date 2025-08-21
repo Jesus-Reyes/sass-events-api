@@ -1,10 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StatusModeloCatalogo } from '../entities/status-modelo-catalogo.entity';
 
 @Injectable()
-export class StatusModeloCatalogoSeedService implements OnModuleInit {
+export class StatusModeloCatalogoSeedService {
   private readonly logger = new Logger(StatusModeloCatalogoSeedService.name);
 
   constructor(
@@ -12,7 +12,7 @@ export class StatusModeloCatalogoSeedService implements OnModuleInit {
     private readonly statusModeloCatalogoRepository: Repository<StatusModeloCatalogo>,
   ) {}
 
-  async onModuleInit() {
+  async executeSeed() {
     await this.seedStatusModeloCatalogos();
   }
 

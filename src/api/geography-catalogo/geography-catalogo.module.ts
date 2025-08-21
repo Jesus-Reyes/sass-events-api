@@ -10,6 +10,7 @@ import { GeographySeedService } from './seeds/geography-seed.service';
   providers: [GeographyCatalogoService, GeographySeedService], 
   imports: [
     TypeOrmModule.forFeature([Geography]), 
-  ]
+  ],
+  exports: [GeographySeedService]
 })
 export class GeographyCatalogoModule { }
