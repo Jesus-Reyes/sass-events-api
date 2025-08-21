@@ -39,6 +39,7 @@ Esta guía te ayudará a configurar Postman para probar todos los endpoints de l
 | `disciplinaId` | `1` | ID de disciplina de prueba |
 | `statusModeloId` | `1` | ID de status modelo de prueba |
 | `modeloContribuyenteId` | `1` | ID de modelo contribuyente de prueba |
+| `CONFIRM_FULL_ROLLBACK` | `""` | ⚠️ Variable de seguridad para rollback completo |
 
 ## Estructura de la Colección
 
@@ -90,10 +91,24 @@ Esta guía te ayudará a configurar Postman para probar todos los endpoints de l
 - 🔄 Cambiar Status del Modelo
 - ❌ Eliminar Modelo Contribuyente
 
+### 📁 Rollback (Limpieza de Datos)
+- 🏥 Health Check - Verificar estado del servicio
+- 📊 Obtener Estadísticas - Ver conteo de registros por tabla
+- 💣 Rollback Completo - ⚠️ ELIMINA TODOS LOS DATOS (solo desarrollo)
+- 🎯 Rollback Parcial - Eliminar datos de tabla específica:
+  - Modelo Contribuyente
+  - Disciplina Catalogo
+  - CFS Catalogo
+  - BU Catalogo
+  - Status Modelo Catalogo
+  - Geography
+- 🔄 Flujo Completo de Rollback - Secuencia recomendada
+
 ### 📁 Flujos de Trabajo Completos
 - **Flujo 1**: Crear CFS desde cero (Geografia → BU → CFS)
 - **Flujo 2**: Crear Disciplina con CFS
 - **Flujo 3**: Gestión de Modelos de Contribuyente
+- **Flujo 4**: Rollback Completo (Estadísticas → Rollback → Verificación)
 
 ## Funcionalidades Incluidas
 
@@ -122,6 +137,27 @@ Cada request incluye tests automáticos que verifican:
 1. Ejecuta toda la colección usando **Collection Runner**
 2. Revisa los tests automáticos en la pestaña **Test Results**
 3. Usa los flujos completos para probar casos de uso reales
+
+### ⚠️ Para Rollback (Limpieza de Datos)
+
+**IMPORTANTE**: Los endpoints de rollback son destructivos y eliminan datos permanentemente.
+
+#### Rollback Seguro:
+1. **Solo en desarrollo**: Nunca uses rollback en producción
+2. **Verificar estadísticas primero**: Usa `GET /rollback/stats` para ver qué datos se eliminarán
+3. **Rollback parcial recomendado**: Usa rollback parcial por tabla cuando sea posible
+
+#### Para Rollback Completo:
+1. **Activar protección**: Establece `CONFIRM_FULL_ROLLBACK = YES_DELETE_ALL_DATA` en el environment
+2. **Solo en desarrollo**: Confirma que estás en entorno de desarrollo
+3. **Backup recomendado**: Haz backup de datos importantes antes del rollback
+4. **Secuencia recomendada**:
+   ```
+   GET /rollback/health     → Verificar servicio
+   GET /rollback/stats      → Ver datos actuales
+   DELETE /rollback/full    → Ejecutar rollback
+   GET /rollback/stats      → Confirmar limpieza
+   ```
 
 ### Para Documentación
 1. Cada request incluye descripción detallada
@@ -177,3 +213,4 @@ npm run start:dev
 - 📖 [Disciplinas Catalogo](../src/api/disciplinas-catalogo/README.md)
 - 📖 [Status Modelo Catalogo](../src/api/status-modelo-catalogo/README.md)
 - 📖 [Modelo Contribuyente](../src/api/modelo-contribuyente/README.md)
+- ⚠️ [Rollback (Limpieza de Datos)](../src/api/rollback/README.md)

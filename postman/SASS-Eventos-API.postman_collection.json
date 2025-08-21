@@ -822,6 +822,261 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Rollback",
+      "description": "Endpoints para limpieza de datos del sistema",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "health"]
+            },
+            "description": "Verificar que el servicio de rollback está disponible y obtener información de endpoints"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains available endpoints', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('availableEndpoints');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener Estadísticas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "stats"]
+            },
+            "description": "Obtener estadísticas de registros en todas las tablas del sistema"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains table statistics', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('total');",
+                  "    pm.expect(responseJson.data).to.have.property('modeloContribuyente');",
+                  "    pm.expect(responseJson.data).to.have.property('geography');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rollback Completo",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/full",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "full"]
+            },
+            "description": "⚠️ PELIGROSO: Elimina TODOS los datos de TODAS las tablas respetando las FK. Solo usar en desarrollo."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Advertencia antes de ejecutar",
+                  "const confirm = pm.environment.get('CONFIRM_FULL_ROLLBACK');",
+                  "if (confirm !== 'YES_DELETE_ALL_DATA') {",
+                  "    throw new Error('Para ejecutar este endpoint, establece la variable CONFIRM_FULL_ROLLBACK=YES_DELETE_ALL_DATA en tu environment');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Rollback executed successfully', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('success');",
+                  "    pm.expect(responseJson.data.success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rollback Parcial - Modelo Contribuyente",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/partial/modelo-contribuyente",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "partial", "modelo-contribuyente"]
+            },
+            "description": "Eliminar solo los datos de la tabla modelo_contribuyentes"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Partial rollback executed', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.have.property('deletedRecords');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rollback Parcial - Disciplina Catalogo",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/partial/disciplina-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "partial", "disciplina-catalogo"]
+            },
+            "description": "Eliminar solo los datos de la tabla disciplinas_catalogos"
+          }
+        },
+        {
+          "name": "Rollback Parcial - CFS Catalogo",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/partial/cfs-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "partial", "cfs-catalogo"]
+            },
+            "description": "Eliminar solo los datos de la tabla cfs_catalogos"
+          }
+        },
+        {
+          "name": "Rollback Parcial - BU Catalogo",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/partial/bu-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "partial", "bu-catalogo"]
+            },
+            "description": "Eliminar solo los datos de la tabla bu_catalogos"
+          }
+        },
+        {
+          "name": "Rollback Parcial - Status Modelo Catalogo",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/partial/status-modelo-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "partial", "status-modelo-catalogo"]
+            },
+            "description": "Eliminar solo los datos de la tabla status_modelo_catalogos"
+          }
+        },
+        {
+          "name": "Rollback Parcial - Geography",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/partial/geography",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "partial", "geography"]
+            },
+            "description": "Eliminar solo los datos de la tabla geographies"
+          }
+        },
+        {
+          "name": "Flujo Completo de Rollback",
+          "description": "Secuencia recomendada para rollback completo",
+          "item": [
+            {
+              "name": "1. Verificar Estado del Servicio",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/rollback/health",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["rollback", "health"]
+                }
+              }
+            },
+            {
+              "name": "2. Obtener Estadísticas ANTES",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/rollback/stats",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["rollback", "stats"]
+                }
+              }
+            },
+            {
+              "name": "3. Ejecutar Rollback Completo",
+              "request": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{baseUrl}}/rollback/full",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["rollback", "full"]
+                }
+              }
+            },
+            {
+              "name": "4. Verificar Estadísticas DESPUÉS",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/rollback/stats",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["rollback", "stats"]
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "event": [
