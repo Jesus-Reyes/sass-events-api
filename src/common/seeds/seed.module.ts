@@ -6,6 +6,7 @@ import { CfsCatalogoModule } from '../../api/cfs-catalogo/cfs-catalogo.module';
 import { DisciplinaCatalogoModule } from '../../api/disciplinas-catalogo/disciplina-catalogo.module';
 import { StatusModeloCatalogoModule } from '../../api/status-modelo-catalogo/status-modelo-catalogo.module';
 import { ModeloContribuyenteModule } from '../../api/modelo-contribuyente/modelo-contribuyente.module';
+import { DashboardModule } from '../../api/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ModeloContribuyenteModule } from '../../api/modelo-contribuyente/modelo
     DisciplinaCatalogoModule,
     StatusModeloCatalogoModule,
     ModeloContribuyenteModule,
+    DashboardModule,
   ],
   providers: [SeedOrchestratorService],
   exports: [SeedOrchestratorService],

@@ -9,6 +9,7 @@ import { ModeloContribuyenteModule } from './api/modelo-contribuyente/modelo-con
 import { StatusModeloCatalogoModule } from './api/status-modelo-catalogo/status-modelo-catalogo.module';
 import { RollbackModule } from './api/rollback/rollback.module';
 import { SeedModule } from './common/seeds/seed.module';
+import { DashboardModule } from './api/dashboard/dashboard.module';
 
 
 
@@ -46,6 +47,8 @@ import { SeedModule } from './common/seeds/seed.module';
     RollbackModule,
 
     SeedModule,
+
+    DashboardModule,
 
     
 

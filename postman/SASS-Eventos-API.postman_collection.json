@@ -39,6 +39,11 @@
       "key": "modeloContribuyenteId",
       "value": "1",
       "type": "string"
+    },
+    {
+      "key": "dashboardId",
+      "value": "1",
+      "type": "string"
     }
   ],
   "item": [
@@ -1072,6 +1077,188 @@
                   "host": ["{{baseUrl}}"],
                   "path": ["rollback", "stats"]
                 }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Crear Dashboard",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreDashboard\": \"Dashboard Prueba API\",\n  \"idBU\": 1,\n  \"ordenTablero\": 1,\n  \"idDisciplina\": 1,\n  \"ordenDisciplinas\": [1, 2],\n  \"clasificacionCriticidad\": true,\n  \"idStatusModelo\": 1,\n  \"idStatusMedicion\": 1,\n  \"idItemsCfs\": [1, 2],\n  \"ordenCfs\": [1, 2],\n  \"perfil\": [\"Analista\", \"Manager\"],\n  \"fechaInicio\": \"2024-01-01\",\n  \"fechaFin\": \"2024-12-31\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard"]
+            },
+            "description": "Crear un nuevo dashboard con todas sus configuraciones"
+          }
+        },
+        {
+          "name": "Obtener todos los Dashboards",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard"]
+            },
+            "description": "Obtener listado completo de dashboards con sus relaciones"
+          }
+        },
+        {
+          "name": "Obtener Dashboard por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/{{dashboardId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "{{dashboardId}}"]
+            },
+            "description": "Obtener un dashboard específico con todas sus relaciones"
+          }
+        },
+        {
+          "name": "Buscar Dashboards por BU",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/search/by-bu/{{buId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "search", "by-bu", "{{buId}}"]
+            },
+            "description": "Buscar dashboards filtrados por Business Unit"
+          }
+        },
+        {
+          "name": "Buscar Dashboards por Disciplina",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/search/by-disciplina/{{disciplinaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "search", "by-disciplina", "{{disciplinaId}}"]
+            },
+            "description": "Buscar dashboards filtrados por Disciplina"
+          }
+        },
+        {
+          "name": "Actualizar Dashboard",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreDashboard\": \"Dashboard Actualizado\",\n  \"clasificacionCriticidad\": false,\n  \"perfil\": [\"Senior Analyst\", \"Risk Manager\"],\n  \"fechaFin\": \"2025-06-30\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/{{dashboardId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "{{dashboardId}}"]
+            },
+            "description": "Actualizar parcialmente un dashboard existente"
+          }
+        },
+        {
+          "name": "Eliminar Dashboard",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/{{dashboardId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "{{dashboardId}}"]
+            },
+            "description": "Eliminar un dashboard del sistema"
+          }
+        },
+        {
+          "name": "Dashboard - Flujo Completo",
+          "item": [
+            {
+              "name": "1. Crear Dashboard Completo",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombreDashboard\": \"Dashboard Riesgo Operacional\",\n  \"idBU\": 1,\n  \"ordenTablero\": 5,\n  \"idDisciplina\": 1,\n  \"ordenDisciplinas\": [1, 2, 3],\n  \"clasificacionCriticidad\": true,\n  \"idStatusModelo\": 1,\n  \"idStatusMedicion\": 2,\n  \"idItemsCfs\": [1, 2, 3],\n  \"ordenCfs\": [1, 2, 3],\n  \"perfil\": [\"Risk Analyst\", \"Operations Manager\", \"Compliance Officer\"],\n  \"fechaInicio\": \"2024-03-01\",\n  \"fechaFin\": \"2024-11-30\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard"]
+                },
+                "description": "Crear dashboard con configuración completa para pruebas"
+              }
+            },
+            {
+              "name": "2. Verificar Dashboard Creado",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard"]
+                },
+                "description": "Verificar que el dashboard se creó correctamente"
+              }
+            },
+            {
+              "name": "3. Actualizar Dashboard",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombreDashboard\": \"Dashboard Riesgo Operacional - Actualizado\",\n  \"clasificacionCriticidad\": false,\n  \"fechaFin\": \"2025-03-31\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard/{{dashboardId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard", "{{dashboardId}}"]
+                },
+                "description": "Actualizar configuración del dashboard"
+              }
+            },
+            {
+              "name": "4. Buscar por BU y Disciplina",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard/search/by-bu/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard", "search", "by-bu", "1"]
+                },
+                "description": "Probar filtros de búsqueda por BU"
               }
             }
           ]

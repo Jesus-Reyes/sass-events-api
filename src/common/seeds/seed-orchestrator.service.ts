@@ -5,6 +5,7 @@ import { CfsCatalogoSeedService } from '../../api/cfs-catalogo/seeds/cfs-catalog
 import { DisciplinaCatalogoSeedService } from '../../api/disciplinas-catalogo/seeds/disciplina-catalogo-seed.service';
 import { StatusModeloCatalogoSeedService } from '../../api/status-modelo-catalogo/seeds/status-modelo-catalogo-seed.service';
 import { ModeloContribuyenteSeedService } from '../../api/modelo-contribuyente/seeds/modelo-contribuyente-seed.service';
+import { DashboardSeedService } from '../../api/dashboard/seeds/dashboard-seed.service';
 
 @Injectable()
 export class SeedOrchestratorService implements OnModuleInit {
@@ -17,6 +18,7 @@ export class SeedOrchestratorService implements OnModuleInit {
     private readonly disciplinaCatalogoSeedService: DisciplinaCatalogoSeedService,
     private readonly statusModeloCatalogoSeedService: StatusModeloCatalogoSeedService,
     private readonly modeloContribuyenteSeedService: ModeloContribuyenteSeedService,
+    private readonly dashboardSeedService: DashboardSeedService,
   ) {}
 
   async onModuleInit() {
@@ -50,6 +52,10 @@ export class SeedOrchestratorService implements OnModuleInit {
       // 6. Finalmente ModeloContribuyente (depende de CfsCatalogo y StatusModeloCatalogo)
       this.logger.log('🤝 Ejecutando Modelo Contribuyente seeds...');
       await this.modeloContribuyenteSeedService.executeSeed();
+
+      // 7. Por último Dashboard (depende de BU, Disciplina, StatusModelo y CFS)
+      this.logger.log('📈 Ejecutando Dashboard seeds...');
+      await this.dashboardSeedService.executeSeed();
 
       this.logger.log('✅ Proceso de seeds completado exitosamente');
     } catch (error) {
