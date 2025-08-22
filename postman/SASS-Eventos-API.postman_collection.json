@@ -7,7 +7,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3000",
+      "value": "http://18.222.0.62/api",
       "type": "string"
     },
     {
@@ -1227,7 +1227,7 @@
               "raw": "{\n  \"nombreDashboard\": \"Dashboard Prueba API\",\n  \"idBU\": 1,\n  \"ordenTablero\": 1,\n  \"idDisciplina\": 1,\n  \"ordenDisciplinas\": [1, 2],\n  \"clasificacionCriticidad\": true,\n  \"idStatusModelo\": 1,\n  \"idStatusMedicion\": 1,\n  \"idItemsCfs\": [1, 2],\n  \"ordenCfs\": [1, 2],\n  \"perfil\": [\"Analista\", \"Manager\"],\n  \"fechaInicio\": \"2024-01-01\",\n  \"fechaFin\": \"2024-12-31\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard",
+              "raw": "{{baseUrl}}/dashboard",
               "host": ["{{baseUrl}}"],
               "path": ["api", "dashboard"]
             },
@@ -1239,7 +1239,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard",
+              "raw": "{{baseUrl}}/dashboard",
               "host": ["{{baseUrl}}"],
               "path": ["api", "dashboard"]
             },
@@ -1251,7 +1251,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard/{{dashboardId}}",
+              "raw": "{{baseUrl}}/dashboard/{{dashboardId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "dashboard", "{{dashboardId}}"]
             },
@@ -1263,7 +1263,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard/search/by-bu/{{buId}}",
+              "raw": "{{baseUrl}}/dashboard/search/by-bu/{{buId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "dashboard", "search", "by-bu", "{{buId}}"]
             },
@@ -1275,7 +1275,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard/search/by-disciplina/{{disciplinaId}}",
+              "raw": "{{baseUrl}}/dashboard/search/by-disciplina/{{disciplinaId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "dashboard", "search", "by-disciplina", "{{disciplinaId}}"]
             },
@@ -1297,7 +1297,7 @@
               "raw": "{\n  \"nombreDashboard\": \"Dashboard Actualizado\",\n  \"clasificacionCriticidad\": false,\n  \"perfil\": [\"Senior Analyst\", \"Risk Manager\"],\n  \"fechaFin\": \"2025-06-30\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard/{{dashboardId}}",
+              "raw": "{{baseUrl}}/dashboard/{{dashboardId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "dashboard", "{{dashboardId}}"]
             },
@@ -1309,7 +1309,7 @@
           "request": {
             "method": "DELETE",
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard/{{dashboardId}}",
+              "raw": "{{baseUrl}}/dashboard/{{dashboardId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "dashboard", "{{dashboardId}}"]
             },
@@ -1334,7 +1334,7 @@
                   "raw": "{\n  \"nombreDashboard\": \"Dashboard Riesgo Operacional\",\n  \"idBU\": 1,\n  \"ordenTablero\": 5,\n  \"idDisciplina\": 1,\n  \"ordenDisciplinas\": [1, 2, 3],\n  \"clasificacionCriticidad\": true,\n  \"idStatusModelo\": 1,\n  \"idStatusMedicion\": 2,\n  \"idItemsCfs\": [1, 2, 3],\n  \"ordenCfs\": [1, 2, 3],\n  \"perfil\": [\"Risk Analyst\", \"Operations Manager\", \"Compliance Officer\"],\n  \"fechaInicio\": \"2024-03-01\",\n  \"fechaFin\": \"2024-11-30\"\n}"
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/api/dashboard",
+                  "raw": "{{baseUrl}}/dashboard",
                   "host": ["{{baseUrl}}"],
                   "path": ["api", "dashboard"]
                 },
@@ -1346,7 +1346,7 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{baseUrl}}/api/dashboard",
+                  "raw": "{{baseUrl}}/dashboard",
                   "host": ["{{baseUrl}}"],
                   "path": ["api", "dashboard"]
                 },
@@ -1368,7 +1368,7 @@
                   "raw": "{\n  \"nombreDashboard\": \"Dashboard Riesgo Operacional - Actualizado\",\n  \"clasificacionCriticidad\": false,\n  \"fechaFin\": \"2025-03-31\"\n}"
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/api/dashboard/{{dashboardId}}",
+                  "raw": "{{baseUrl}}/dashboard/{{dashboardId}}",
                   "host": ["{{baseUrl}}"],
                   "path": ["api", "dashboard", "{{dashboardId}}"]
                 },
@@ -1380,7 +1380,7 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{baseUrl}}/api/dashboard/search/by-bu/1",
+                  "raw": "{{baseUrl}}/dashboard/search/by-bu/1",
                   "host": ["{{baseUrl}}"],
                   "path": ["api", "dashboard", "search", "by-bu", "1"]
                 },
