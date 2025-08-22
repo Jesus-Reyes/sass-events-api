@@ -4,6 +4,7 @@ import { BuCatalogoSeedService } from '../../api/bu-catalogo/seeds/bu-catalogo-s
 import { CfsCatalogoSeedService } from '../../api/cfs-catalogo/seeds/cfs-catalogo-seed.service';
 import { DisciplinaCatalogoSeedService } from '../../api/disciplinas-catalogo/seeds/disciplina-catalogo-seed.service';
 import { StatusModeloCatalogoSeedService } from '../../api/status-modelo-catalogo/seeds/status-modelo-catalogo-seed.service';
+import { StatusMedicionSeedService } from '../../api/status-medicion/seeds/status-medicion-seed.service';
 import { ModeloContribuyenteSeedService } from '../../api/modelo-contribuyente/seeds/modelo-contribuyente-seed.service';
 import { DashboardSeedService } from '../../api/dashboard/seeds/dashboard-seed.service';
 
@@ -17,6 +18,7 @@ export class SeedOrchestratorService implements OnModuleInit {
     private readonly cfsCatalogoSeedService: CfsCatalogoSeedService,
     private readonly disciplinaCatalogoSeedService: DisciplinaCatalogoSeedService,
     private readonly statusModeloCatalogoSeedService: StatusModeloCatalogoSeedService,
+    private readonly statusMedicionSeedService: StatusMedicionSeedService,
     private readonly modeloContribuyenteSeedService: ModeloContribuyenteSeedService,
     private readonly dashboardSeedService: DashboardSeedService,
   ) {}
@@ -45,15 +47,19 @@ export class SeedOrchestratorService implements OnModuleInit {
       this.logger.log('📊 Ejecutando Status Modelo Catálogo seeds...');
       await this.statusModeloCatalogoSeedService.executeSeed();
 
-      // 5. Después DisciplinaCatalogo (depende de CfsCatalogo)
+      // 5. Después StatusMedicion (no tiene dependencias)
+      this.logger.log('📋 Ejecutando Status Medición seeds...');
+      await this.statusMedicionSeedService.executeSeed();
+
+      // 6. Después DisciplinaCatalogo (depende de CfsCatalogo)
       this.logger.log('📚 Ejecutando Disciplina Catálogo seeds...');
       await this.disciplinaCatalogoSeedService.executeSeed();
 
-      // 6. Finalmente ModeloContribuyente (depende de CfsCatalogo y StatusModeloCatalogo)
+      // 7. Finalmente ModeloContribuyente (depende de CfsCatalogo y StatusModeloCatalogo)
       this.logger.log('🤝 Ejecutando Modelo Contribuyente seeds...');
       await this.modeloContribuyenteSeedService.executeSeed();
 
-      // 7. Por último Dashboard (depende de BU, Disciplina, StatusModelo y CFS)
+      // 8. Por último Dashboard (depende de BU, Disciplina, StatusModelo y CFS)
       this.logger.log('📈 Ejecutando Dashboard seeds...');
       await this.dashboardSeedService.executeSeed();
 

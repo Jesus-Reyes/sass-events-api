@@ -36,6 +36,11 @@
       "type": "string"
     },
     {
+      "key": "statusMedicionId",
+      "value": "1",
+      "type": "string"
+    },
+    {
       "key": "modeloContribuyenteId",
       "value": "1",
       "type": "string"
@@ -1020,6 +1025,18 @@
           }
         },
         {
+          "name": "Rollback Parcial - Status Medición",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rollback/partial/status-medicion",
+              "host": ["{{baseUrl}}"],
+              "path": ["rollback", "partial", "status-medicion"]
+            },
+            "description": "Eliminar solo los datos de la tabla status_mediciones"
+          }
+        },
+        {
           "name": "Rollback Parcial - Geography",
           "request": {
             "method": "DELETE",
@@ -1080,6 +1097,115 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Status Medición",
+      "item": [
+        {
+          "name": "Crear Status Medición",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"En proceso\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/status-medicion",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-medicion"]
+            },
+            "description": "Crear un nuevo estado para mediciones del sistema"
+          }
+        },
+        {
+          "name": "Obtener todos los Status Mediciones",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/status-medicion",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-medicion"]
+            },
+            "description": "Obtener listado completo de estados de mediciones"
+          }
+        },
+        {
+          "name": "Obtener Status Mediciones Activos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/status-medicion/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-medicion", "active"]
+            },
+            "description": "Obtener solo los estados de medición activos (ideal para dropdowns)"
+          }
+        },
+        {
+          "name": "Obtener Status Medición por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/status-medicion/{{statusMedicionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-medicion", "{{statusMedicionId}}"]
+            },
+            "description": "Obtener información de un estado de medición específico"
+          }
+        },
+        {
+          "name": "Actualizar Status Medición",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Completado\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/status-medicion/{{statusMedicionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-medicion", "{{statusMedicionId}}"]
+            },
+            "description": "Actualizar información de un estado de medición"
+          }
+        },
+        {
+          "name": "Toggle Estado Activo - Status Medición",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/status-medicion/{{statusMedicionId}}/toggle-active",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-medicion", "{{statusMedicionId}}", "toggle-active"]
+            },
+            "description": "Alternar estado activo/inactivo de un status de medición"
+          }
+        },
+        {
+          "name": "Eliminar Status Medición",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/status-medicion/{{statusMedicionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["status-medicion", "{{statusMedicionId}}"]
+            },
+            "description": "Eliminar un estado de medición del sistema"
+          }
         }
       ]
     },

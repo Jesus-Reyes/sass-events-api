@@ -5,6 +5,7 @@ import { BuCatalogoModule } from '../../api/bu-catalogo/bu-catalogo.module';
 import { CfsCatalogoModule } from '../../api/cfs-catalogo/cfs-catalogo.module';
 import { DisciplinaCatalogoModule } from '../../api/disciplinas-catalogo/disciplina-catalogo.module';
 import { StatusModeloCatalogoModule } from '../../api/status-modelo-catalogo/status-modelo-catalogo.module';
+import { StatusMedicionModule } from '../../api/status-medicion/status-medicion.module';
 import { ModeloContribuyenteModule } from '../../api/modelo-contribuyente/modelo-contribuyente.module';
 import { DashboardModule } from '../../api/dashboard/dashboard.module';
 
@@ -15,6 +16,7 @@ import { DashboardModule } from '../../api/dashboard/dashboard.module';
     CfsCatalogoModule,
     DisciplinaCatalogoModule,
     StatusModeloCatalogoModule,
+    StatusMedicionModule,
     ModeloContribuyenteModule,
     DashboardModule,
   ],

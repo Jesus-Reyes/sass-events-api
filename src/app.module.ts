@@ -10,6 +10,7 @@ import { StatusModeloCatalogoModule } from './api/status-modelo-catalogo/status-
 import { RollbackModule } from './api/rollback/rollback.module';
 import { SeedModule } from './common/seeds/seed.module';
 import { DashboardModule } from './api/dashboard/dashboard.module';
+import { StatusMedicionModule } from './api/status-medicion/status-medicion.module';
 
 
 
@@ -49,6 +50,8 @@ import { DashboardModule } from './api/dashboard/dashboard.module';
     SeedModule,
 
     DashboardModule,
+
+    StatusMedicionModule,
 
     
 
