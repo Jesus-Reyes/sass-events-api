@@ -1,8 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { VentanasDto, VentanaConfigDto, FechasDto, PartnershipDto } from './dto/create-modelo-evento.dto';
+import { VentanasDto, VentanaConfigDto, FechasDto, PartnershipDto, DiasSemanaDto } from './dto/create-modelo-evento.dto';
 
 @Injectable()
 export class ModeloEventoValidationService {
+
+  /**
+   * Valida que las ventanas críticas y no críticas cubran exactamente la ventana general
+   */
+  validateVentanas(ventanas: VentanasDto): void {
+    const logicValidation = this.validateVentanasLogic(ventanas);
+    const overlapValidation = this.validateNoOverlap([
+      ...(ventanas.ventanaGeneral || []),
+      ...(ventanas.ventanaCritica || []),
+      ...(ventanas.ventanaNoCritica || [])
+    ]);
+
+    const allErrors = [...logicValidation.errors, ...overlapValidation.errors];
+    
+    if (allErrors.length > 0) {
+      throw new Error(allErrors.join(', '));
+    }
+  }
 
   /**
    * Valida que las ventanas críticas y no críticas cubran exactamente la ventana general
@@ -90,7 +108,7 @@ export class ModeloEventoValidationService {
   validatePartnershipMetas(partnership: PartnershipDto): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    if (partnership.partnership !== 'NA') {
+    if (partnership.partnershipId) {
       // Si hay partnership, validar que las metas sean coherentes
       const { metaPartnershipMinimumSLA, metaPartnershipExpectedSLA, metaPartnershipStretchedSLA } = partnership;
 
@@ -192,13 +210,14 @@ export class ModeloEventoValidationService {
     return !(fin1 <= inicio2 || fin2 <= inicio1);
   }
 
-  private getDiasComunes(dias1: any, dias2: any): string[] {
+  private getDiasComunes(dias1: DiasSemanaDto, dias2: DiasSemanaDto): string[] {
     const comunes: string[] = [];
     
-    for (const dia of ['L', 'M', 'Mi', 'J', 'V', 'S', 'D']) {
-      // if (dias1[dia] && dias2[dia]) {
-      //   comunes.push(dia);
-      // }
+    const diasArray: (keyof DiasSemanaDto)[] = ['L', 'M', 'Mi', 'J', 'V', 'S', 'D'];
+    for (const dia of diasArray) {
+      if (dias1[dia] && dias2[dia]) {
+        comunes.push(dia);
+      }
     }
 
     return comunes;

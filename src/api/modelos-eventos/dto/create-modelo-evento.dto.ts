@@ -17,27 +17,27 @@ import { ModeloTipo, FuenteDatos } from '../entities/datos-medicion.entity';
 import { StatusMedicionPartnership } from '../entities/datos-partnership.entity';
 
 export class DatosCFSDto {
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  buId: string;
+  buId: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  cfsId: string;
+  cfsId: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  serviceOwnerId: string;
+  serviceOwnerId: number;
 }
 
 export class DatosMedicionDto {
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  estatusModelo: string; // Se validará contra el catálogo
+  estatusModeloId: number; // ID del catálogo
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  estatusMedicion: string; // Se validará contra el catálogo
+  estatusMedicionId: number; // ID del catálogo
 
   @IsEnum(ModeloTipo)
   modelo: ModeloTipo;
@@ -52,9 +52,9 @@ export class DatosMedicionDto {
 }
 
 export class PartnershipDto {
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  partnership: string; // "NA" o nombre del partnership
+  partnershipId?: number; // ID del catálogo, null para "NA"
 
   @IsEnum(StatusMedicionPartnership)
   estatusMedicionPartnership: StatusMedicionPartnership;
@@ -76,7 +76,7 @@ export class PartnershipDto {
 
   @IsString()
   @IsOptional()
-  definirFuncionalidadDependencia: string;
+  definirFuncionalidadDependencia?: string;
 }
 
 export class FechasDto {
