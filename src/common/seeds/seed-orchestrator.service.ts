@@ -4,15 +4,17 @@ import { BuCatalogoSeedService } from '../../api/bu-catalogo/seeds/bu-catalogo-s
 import { CfsCatalogoSeedService } from '../../api/cfs-catalogo/seeds/cfs-catalogo-seed.service';
 import { DisciplinaCatalogoSeedService } from '../../api/disciplinas-catalogo/seeds/disciplina-catalogo-seed.service';
 import { StatusModeloCatalogoSeedService } from '../../api/status-modelo-catalogo/seeds/status-modelo-catalogo-seed.service';
-import { StatusMedicionSeedService } from '../../api/status-medicion/seeds/status-medicion-seed.service';
+import { StatusMedicionSeedService } from '../../api/status-medicion-catalogo/seeds/status-medicion-seed.service';
 import { ModeloContribuyenteSeedService } from '../../api/modelo-contribuyente/seeds/modelo-contribuyente-seed.service';
 import { DashboardSeedService } from '../../api/dashboard/seeds/dashboard-seed.service';
 import { OperativaCatalogoSeedService } from '../../api/operativas-catalogo/seeds/operativa-catalogo-seed.service';
 import { MetricaImpactoSeedService } from '../../api/metricas-impacto/seeds/metrica-impacto-seed.service';
 import { IncidenciasSeedService } from '../../api/incidencias/seeds/incidencias-seed.service';
-import { ServiceOwnersSeed } from './service-owners.seed';
-import { PartnershipSeed } from './partnership.seed';
-import { ModelosEventosSeed } from './modelos-eventos.seed';
+
+
+import { ServiceOwnersSeed } from 'src/api/service-owners-catalogo/seed/service-owners-catalogo-seed.service';
+import { PartnershipSeed } from 'src/api/partnership-catalogo/seed/partnership-catalogo-seed.service';
+import { ModelosEventosSeed } from 'src/api/modelo-eventos/seed/modelo-eventos-seed.service';
 
 @Injectable()
 export class SeedOrchestratorService implements OnModuleInit {

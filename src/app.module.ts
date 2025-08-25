@@ -16,8 +16,9 @@ import { MetricaImpactoModule } from './api/metricas-impacto/metricas-impacto.mo
 import { IncidenciasModule } from './api/incidencias/incidencias.module';
 import { ServiceOwnersCatalogoModule } from './api/service-owners-catalogo/service-owners-catalogo.module';
 import { PartnershipCatalogoModule } from './api/partnership-catalogo/partnership-catalogo.module';
-import { ModelosEventosModule } from './api/modelos-eventos/modelos-eventos.module';
+
 import { StatusMedicionCatalogoModule } from './api/status-medicion-catalogo/status-medicion-catalogo.module';
+import { ModeloEventosModule } from './api/modelo-eventos/modelo-eventos.module';
 
 @Module({
   controllers: [],
@@ -69,7 +70,7 @@ import { StatusMedicionCatalogoModule } from './api/status-medicion-catalogo/sta
 
     PartnershipCatalogoModule,
 
-    ModelosEventosModule,
+    ModeloEventosModule,
 
   ],
 })

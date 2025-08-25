@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ServiceOwner } from '../../api/service-owners-catalogo/entities/service-owner.entity';
+import { ServiceOwner } from '../entities/service-owner.entity';
+
 
 @Injectable()
 export class ServiceOwnersSeed {
