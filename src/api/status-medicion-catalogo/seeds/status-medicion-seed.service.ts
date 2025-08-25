@@ -27,50 +27,50 @@ export class StatusMedicionSeedService {
 
       const statusMediciones = [
         // Estados básicos del proceso de medición
-        { nombre: 'Pendiente' },
-        { nombre: 'En Proceso' },
-        { nombre: 'En Ejecución' },
-        { nombre: 'Completado' },
-        { nombre: 'Finalizado' },
+        { name: 'Pendiente' },
+        { name: 'En Proceso' },
+        { name: 'En Ejecución' },
+        { name: 'Completado' },
+        { name: 'Finalizado' },
         
         // Estados de validación y revisión
-        { nombre: 'En Validación' },
-        { nombre: 'Validado' },
-        { nombre: 'En Revisión' },
-        { nombre: 'Revisado' },
-        { nombre: 'Aprobado' },
+        { name: 'En Validación' },
+        { name: 'Validado' },
+        { name: 'En Revisión' },
+        { name: 'Revisado' },
+        { name: 'Aprobado' },
         
         // Estados de error o problema
-        { nombre: 'Fallido' },
-        { nombre: 'Error' },
-        { nombre: 'Cancelado' },
-        { nombre: 'Suspendido' },
-        { nombre: 'Reintentando' },
+        { name: 'Fallido' },
+        { name: 'Error' },
+        { name: 'Cancelado' },
+        { name: 'Suspendido' },
+        { name: 'Reintentando' },
         
         // Estados específicos para análisis
-        { nombre: 'En Análisis' },
-        { nombre: 'Análisis Completado' },
-        { nombre: 'Requiere Análisis Adicional' },
+        { name: 'En Análisis' },
+        { name: 'Análisis Completado' },
+        { name: 'Requiere Análisis Adicional' },
         
         // Estados para reporte
-        { nombre: 'Listo para Reporte' },
-        { nombre: 'Reportado' },
-        { nombre: 'Entregado' },
+        { name: 'Listo para Reporte' },
+        { name: 'Reportado' },
+        { name: 'Entregado' },
         
         // Estados de calidad
-        { nombre: 'Control de Calidad' },
-        { nombre: 'Calidad Aprobada' },
-        { nombre: 'Calidad Rechazada' },
+        { name: 'Control de Calidad' },
+        { name: 'Calidad Aprobada' },
+        { name: 'Calidad Rechazada' },
         
         // Estados de contingencia
-        { nombre: 'En Espera' },
-        { nombre: 'Pausado' },
-        { nombre: 'Bloqueado' },
-        { nombre: 'Expirado' },
+        { name: 'En Espera' },
+        { name: 'Pausado' },
+        { name: 'Bloqueado' },
+        { name: 'Expirado' },
         
         // Estados de archivado
-        { nombre: 'Archivado' },
-        { nombre: 'Histórico' },
+        { name: 'Archivado' },
+        { name: 'Histórico' },
       ];
 
       const savedStatusMediciones = await this.statusMedicionRepository.save(statusMediciones);

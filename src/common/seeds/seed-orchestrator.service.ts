@@ -10,6 +10,9 @@ import { DashboardSeedService } from '../../api/dashboard/seeds/dashboard-seed.s
 import { OperativaCatalogoSeedService } from '../../api/operativas-catalogo/seeds/operativa-catalogo-seed.service';
 import { MetricaImpactoSeedService } from '../../api/metricas-impacto/seeds/metrica-impacto-seed.service';
 import { IncidenciasSeedService } from '../../api/incidencias/seeds/incidencias-seed.service';
+import { ServiceOwnersSeed } from './service-owners.seed';
+import { PartnershipSeed } from './partnership.seed';
+import { ModelosEventosSeed } from './modelos-eventos.seed';
 
 @Injectable()
 export class SeedOrchestratorService implements OnModuleInit {
@@ -27,6 +30,9 @@ export class SeedOrchestratorService implements OnModuleInit {
     private readonly operativaCatalogoSeedService: OperativaCatalogoSeedService,
     private readonly metricaImpactoSeedService: MetricaImpactoSeedService,
     private readonly incidenciasSeedService: IncidenciasSeedService,
+    private readonly serviceOwnersSeed: ServiceOwnersSeed,
+    private readonly partnershipSeed: PartnershipSeed,
+    private readonly modelosEventosSeed: ModelosEventosSeed,
   ) {}
 
   async onModuleInit() {
@@ -77,9 +83,21 @@ export class SeedOrchestratorService implements OnModuleInit {
       this.logger.log('📈 Ejecutando Dashboard seeds...');
       await this.dashboardSeedService.executeSeed();
 
-      // 11. Finalmente Incidencias (depende de BU, CFS y Operativas)
+      // 11. Service Owners (no tiene dependencias)
+      this.logger.log('👥 Ejecutando Service Owners seeds...');
+      await this.serviceOwnersSeed.seed();
+
+      // 12. Partnerships (no tiene dependencias)
+      this.logger.log('🤝 Ejecutando Partnerships seeds...');
+      await this.partnershipSeed.seed();
+
+      // 13. Finalmente Incidencias (depende de BU, CFS y Operativas)
       this.logger.log('🚨 Ejecutando Incidencias seeds...');
       await this.incidenciasSeedService.executeSeed();
+
+      // 14. Modelos de Eventos (depende de Geography, BU, CFS, ServiceOwners y Partnerships)
+      this.logger.log('📋 Ejecutando Modelos de Eventos seeds...');
+      await this.modelosEventosSeed.seed();
 
       this.logger.log('✅ Proceso de seeds completado exitosamente');
     } catch (error) {

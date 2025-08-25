@@ -10,10 +10,14 @@ import { StatusModeloCatalogoModule } from './api/status-modelo-catalogo/status-
 import { RollbackModule } from './api/rollback/rollback.module';
 import { SeedModule } from './common/seeds/seed.module';
 import { DashboardModule } from './api/dashboard/dashboard.module';
-import { StatusMedicionModule } from './api/status-medicion/status-medicion.module';
+
 import { OperativaCatalogoModule } from './api/operativas-catalogo/operativas-catalogo.module';
 import { MetricaImpactoModule } from './api/metricas-impacto/metricas-impacto.module';
 import { IncidenciasModule } from './api/incidencias/incidencias.module';
+import { ServiceOwnersCatalogoModule } from './api/service-owners-catalogo/service-owners-catalogo.module';
+import { PartnershipCatalogoModule } from './api/partnership-catalogo/partnership-catalogo.module';
+import { ModelosEventosModule } from './api/modelos-eventos/modelos-eventos.module';
+import { StatusMedicionCatalogoModule } from './api/status-medicion-catalogo/status-medicion-catalogo.module';
 
 @Module({
   controllers: [],
@@ -51,7 +55,9 @@ import { IncidenciasModule } from './api/incidencias/incidencias.module';
 
     DashboardModule,
 
-    StatusMedicionModule,
+    
+
+    StatusMedicionCatalogoModule,
 
     OperativaCatalogoModule,
 
@@ -59,9 +65,11 @@ import { IncidenciasModule } from './api/incidencias/incidencias.module';
 
     IncidenciasModule,
 
-    
+    ServiceOwnersCatalogoModule,
 
+    PartnershipCatalogoModule,
 
+    ModelosEventosModule,
 
   ],
 })
