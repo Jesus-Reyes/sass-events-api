@@ -7,10 +7,13 @@ import { IncidenciasSeedService } from './seeds/incidencias-seed.service';
 import { BuCatalogoModule } from '../bu-catalogo/bu-catalogo.module';
 import { CfsCatalogoModule } from '../cfs-catalogo/cfs-catalogo.module';
 import { OperativaCatalogoModule } from '../operativas-catalogo/operativas-catalogo.module';
+import { BuCatalogo } from '../bu-catalogo/entities/bu-catalogo.entity';
+import { CfsCatalogo } from '../cfs-catalogo/entities/cfs-catalogo.entity';
+import { MetricaImpacto } from '../metricas-impacto';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Incidencia]),
+    TypeOrmModule.forFeature([Incidencia, BuCatalogo, CfsCatalogo, MetricaImpacto]),
     BuCatalogoModule,
     CfsCatalogoModule,
     OperativaCatalogoModule
