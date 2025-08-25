@@ -7,28 +7,37 @@ import { CfsCatalogo } from '../cfs-catalogo/entities/cfs-catalogo.entity';
 import { BuCatalogo } from '../bu-catalogo/entities/bu-catalogo.entity';
 import { StatusModeloCatalogo } from '../status-modelo-catalogo/entities/status-modelo-catalogo.entity';
 import { Geography } from '../geography-catalogo/entities/geography.entity';
+import { Incidencia } from '../incidencias/entities/incidencia.entity';
+import { OperativaCatalogo } from '../operativas-catalogo/entities/operativa-catalogo.entity';
+import { MetricaImpacto } from '../metricas-impacto/entities/metrica-impacto.entity';
 
 export interface RollbackResult {
   success: boolean;
   message: string;
   deletedRecords: {
+    incidencias: number;
     modeloContribuyente: number;
     disciplinaCfs: number;
     disciplinaCatalogo: number;
     cfsCatalogo: number;
     buCatalogo: number;
     statusModeloCatalogo: number;
+    operativaCatalogo: number;
+    metricaImpacto: number;
     geography: number;
   };
   errors?: string[];
 }
 
 export interface TablesStats {
+  incidencias: number;
   modeloContribuyente: number;
   disciplinaCatalogo: number;
   cfsCatalogo: number;
   buCatalogo: number;
   statusModeloCatalogo: number;
+  operativaCatalogo: number;
+  metricaImpacto: number;
   geography: number;
   disciplinaCfs: number;
   total: number;
@@ -56,12 +65,15 @@ export class RollbackService {
       success: false,
       message: '',
       deletedRecords: {
+        incidencias: 0,
         modeloContribuyente: 0,
         disciplinaCfs: 0,
         disciplinaCatalogo: 0,
         cfsCatalogo: 0,
         buCatalogo: 0,
         statusModeloCatalogo: 0,
+        operativaCatalogo: 0,
+        metricaImpacto: 0,
         geography: 0,
       },
       errors: [],
@@ -70,7 +82,16 @@ export class RollbackService {
     try {
       this.logger.log('Iniciando rollback completo...');
 
-      // 1. Eliminar ModeloContribuyente (depende de CfsCatalogo y StatusModeloCatalogo)
+      // 1. Eliminar Incidencias (depende de BuCatalogo, CfsCatalogo, OperativaCatalogo)
+      const incidenciasCount = await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from(Incidencia)
+        .execute();
+      result.deletedRecords.incidencias = incidenciasCount.affected || 0;
+      this.logger.log(`Eliminados ${result.deletedRecords.incidencias} registros de Incidencias`);
+
+      // 2. Eliminar ModeloContribuyente (depende de CfsCatalogo y StatusModeloCatalogo)
       const modeloContribuyenteCount = await queryRunner.manager
         .createQueryBuilder()
         .delete()
@@ -79,7 +100,7 @@ export class RollbackService {
       result.deletedRecords.modeloContribuyente = modeloContribuyenteCount.affected || 0;
       this.logger.log(`Eliminados ${result.deletedRecords.modeloContribuyente} registros de ModeloContribuyente`);
 
-      // 2. Eliminar relaciones many-to-many disciplina_cfs
+      // 3. Eliminar relaciones many-to-many disciplina_cfs
       const disciplinaCfsCount = await queryRunner.manager
         .createQueryBuilder()
         .delete()
@@ -88,7 +109,7 @@ export class RollbackService {
       result.deletedRecords.disciplinaCfs = disciplinaCfsCount.affected || 0;
       this.logger.log(`Eliminados ${result.deletedRecords.disciplinaCfs} registros de disciplina_cfs`);
 
-      // 3. Eliminar DisciplinaCatalogo
+      // 4. Eliminar DisciplinaCatalogo
       const disciplinaCatalogoCount = await queryRunner.manager
         .createQueryBuilder()
         .delete()
@@ -97,7 +118,7 @@ export class RollbackService {
       result.deletedRecords.disciplinaCatalogo = disciplinaCatalogoCount.affected || 0;
       this.logger.log(`Eliminados ${result.deletedRecords.disciplinaCatalogo} registros de DisciplinaCatalogo`);
 
-      // 4. Eliminar CfsCatalogo (depende de BuCatalogo)
+      // 5. Eliminar CfsCatalogo (depende de BuCatalogo)
       const cfsCatalogoCount = await queryRunner.manager
         .createQueryBuilder()
         .delete()
@@ -106,7 +127,7 @@ export class RollbackService {
       result.deletedRecords.cfsCatalogo = cfsCatalogoCount.affected || 0;
       this.logger.log(`Eliminados ${result.deletedRecords.cfsCatalogo} registros de CfsCatalogo`);
 
-      // 5. Eliminar BuCatalogo (depende de Geography)
+      // 6. Eliminar BuCatalogo (depende de Geography)
       const buCatalogoCount = await queryRunner.manager
         .createQueryBuilder()
         .delete()
@@ -115,7 +136,7 @@ export class RollbackService {
       result.deletedRecords.buCatalogo = buCatalogoCount.affected || 0;
       this.logger.log(`Eliminados ${result.deletedRecords.buCatalogo} registros de BuCatalogo`);
 
-      // 6. Eliminar StatusModeloCatalogo (independiente)
+      // 7. Eliminar StatusModeloCatalogo (independiente)
       const statusModeloCatalogoCount = await queryRunner.manager
         .createQueryBuilder()
         .delete()
@@ -124,7 +145,25 @@ export class RollbackService {
       result.deletedRecords.statusModeloCatalogo = statusModeloCatalogoCount.affected || 0;
       this.logger.log(`Eliminados ${result.deletedRecords.statusModeloCatalogo} registros de StatusModeloCatalogo`);
 
-      // 7. Eliminar Geography (base de la jerarquía)
+      // 8. Eliminar OperativaCatalogo (independiente)
+      const operativaCatalogoCount = await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from(OperativaCatalogo)
+        .execute();
+      result.deletedRecords.operativaCatalogo = operativaCatalogoCount.affected || 0;
+      this.logger.log(`Eliminados ${result.deletedRecords.operativaCatalogo} registros de OperativaCatalogo`);
+
+      // 9. Eliminar MetricaImpacto (independiente)
+      const metricaImpactoCount = await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from(MetricaImpacto)
+        .execute();
+      result.deletedRecords.metricaImpacto = metricaImpactoCount.affected || 0;
+      this.logger.log(`Eliminados ${result.deletedRecords.metricaImpacto} registros de MetricaImpacto`);
+
+      // 10. Eliminar Geography (base de la jerarquía)
       const geographyCount = await queryRunner.manager
         .createQueryBuilder()
         .delete()
@@ -148,9 +187,8 @@ export class RollbackService {
       this.logger.error('Error durante el rollback:', error);
       
       result.success = false;
-      result.message = 'Error durante la ejecución del rollback';
+      result.message = 'Error durante el rollback';
       result.errors = [error instanceof Error ? error.message : String(error)];
-      
       return result;
     } finally {
       await queryRunner.release();
@@ -170,12 +208,15 @@ export class RollbackService {
       success: false,
       message: '',
       deletedRecords: {
+        incidencias: 0,
         modeloContribuyente: 0,
         disciplinaCfs: 0,
         disciplinaCatalogo: 0,
         cfsCatalogo: 0,
         buCatalogo: 0,
         statusModeloCatalogo: 0,
+        operativaCatalogo: 0,
+        metricaImpacto: 0,
         geography: 0,
       },
       errors: [],
@@ -188,6 +229,10 @@ export class RollbackService {
       let resultKey: keyof typeof result.deletedRecords;
 
       switch (tableName.toLowerCase()) {
+        case 'incidencias':
+          entityClass = Incidencia;
+          resultKey = 'incidencias';
+          break;
         case 'modelo-contribuyente':
         case 'modelo_contribuyentes':
           entityClass = ModeloContribuyente;
@@ -212,6 +257,16 @@ export class RollbackService {
         case 'status_modelo_catalogos':
           entityClass = StatusModeloCatalogo;
           resultKey = 'statusModeloCatalogo';
+          break;
+        case 'operativa-catalogo':
+        case 'operativas_catalogos':
+          entityClass = OperativaCatalogo;
+          resultKey = 'operativaCatalogo';
+          break;
+        case 'metrica-impacto':
+        case 'metricas_impacto':
+          entityClass = MetricaImpacto;
+          resultKey = 'metricaImpacto';
           break;
         case 'geography':
         case 'geographies':
@@ -258,11 +313,14 @@ export class RollbackService {
    */
   async getTablesStats(): Promise<TablesStats> {
     try {
+      const incidenciasCount = await this.dataSource.manager.count(Incidencia);
       const modeloContribuyenteCount = await this.dataSource.manager.count(ModeloContribuyente);
       const disciplinaCatalogoCount = await this.dataSource.manager.count(DisciplinaCatalogo);
       const cfsCatalogoCount = await this.dataSource.manager.count(CfsCatalogo);
       const buCatalogoCount = await this.dataSource.manager.count(BuCatalogo);
       const statusModeloCatalogoCount = await this.dataSource.manager.count(StatusModeloCatalogo);
+      const operativaCatalogoCount = await this.dataSource.manager.count(OperativaCatalogo);
+      const metricaImpactoCount = await this.dataSource.manager.count(MetricaImpacto);
       const geographyCount = await this.dataSource.manager.count(Geography);
 
       // Contar registros en tabla intermedia disciplina_cfs
@@ -273,15 +331,18 @@ export class RollbackService {
       const disciplinaCfsCount = disciplinaCfsResult[0]?.count ? parseInt(disciplinaCfsResult[0].count) : 0;
 
       return {
+        incidencias: incidenciasCount,
         modeloContribuyente: modeloContribuyenteCount,
         disciplinaCatalogo: disciplinaCatalogoCount,
         cfsCatalogo: cfsCatalogoCount,
         buCatalogo: buCatalogoCount,
         statusModeloCatalogo: statusModeloCatalogoCount,
+        operativaCatalogo: operativaCatalogoCount,
+        metricaImpacto: metricaImpactoCount,
         geography: geographyCount,
         disciplinaCfs: disciplinaCfsCount,
-        total: modeloContribuyenteCount + disciplinaCatalogoCount + cfsCatalogoCount + 
-               buCatalogoCount + statusModeloCatalogoCount + geographyCount + disciplinaCfsCount
+        total: incidenciasCount + modeloContribuyenteCount + disciplinaCatalogoCount + cfsCatalogoCount + 
+               buCatalogoCount + statusModeloCatalogoCount + operativaCatalogoCount + metricaImpactoCount + geographyCount + disciplinaCfsCount
       };
 
     } catch (error) {

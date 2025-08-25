@@ -11,9 +11,9 @@ import { RollbackModule } from './api/rollback/rollback.module';
 import { SeedModule } from './common/seeds/seed.module';
 import { DashboardModule } from './api/dashboard/dashboard.module';
 import { StatusMedicionModule } from './api/status-medicion/status-medicion.module';
-
-
-
+import { OperativaCatalogoModule } from './api/operativas-catalogo/operativas-catalogo.module';
+import { MetricaImpactoModule } from './api/metricas-impacto/metricas-impacto.module';
+import { IncidenciasModule } from './api/incidencias/incidencias.module';
 
 @Module({
   controllers: [],
@@ -53,7 +53,11 @@ import { StatusMedicionModule } from './api/status-medicion/status-medicion.modu
 
     StatusMedicionModule,
 
-    
+    OperativaCatalogoModule,
+
+    MetricaImpactoModule,
+
+    IncidenciasModule,
 
     
 

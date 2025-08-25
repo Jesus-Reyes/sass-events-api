@@ -7,6 +7,9 @@ import { StatusModeloCatalogoSeedService } from '../../api/status-modelo-catalog
 import { StatusMedicionSeedService } from '../../api/status-medicion/seeds/status-medicion-seed.service';
 import { ModeloContribuyenteSeedService } from '../../api/modelo-contribuyente/seeds/modelo-contribuyente-seed.service';
 import { DashboardSeedService } from '../../api/dashboard/seeds/dashboard-seed.service';
+import { OperativaCatalogoSeedService } from '../../api/operativas-catalogo/seeds/operativa-catalogo-seed.service';
+import { MetricaImpactoSeedService } from '../../api/metricas-impacto/seeds/metrica-impacto-seed.service';
+import { IncidenciasSeedService } from '../../api/incidencias/seeds/incidencias-seed.service';
 
 @Injectable()
 export class SeedOrchestratorService implements OnModuleInit {
@@ -21,6 +24,9 @@ export class SeedOrchestratorService implements OnModuleInit {
     private readonly statusMedicionSeedService: StatusMedicionSeedService,
     private readonly modeloContribuyenteSeedService: ModeloContribuyenteSeedService,
     private readonly dashboardSeedService: DashboardSeedService,
+    private readonly operativaCatalogoSeedService: OperativaCatalogoSeedService,
+    private readonly metricaImpactoSeedService: MetricaImpactoSeedService,
+    private readonly incidenciasSeedService: IncidenciasSeedService,
   ) {}
 
   async onModuleInit() {
@@ -51,17 +57,29 @@ export class SeedOrchestratorService implements OnModuleInit {
       this.logger.log('📋 Ejecutando Status Medición seeds...');
       await this.statusMedicionSeedService.executeSeed();
 
-      // 6. Después DisciplinaCatalogo (depende de CfsCatalogo)
+      // 6. Después Operativas Catálogo (no tiene dependencias)
+      this.logger.log('⚙️ Ejecutando Operativas Catálogo seeds...');
+      await this.operativaCatalogoSeedService.executeSeed();
+
+      // 7. Después Métricas de Impacto (no tiene dependencias)
+      this.logger.log('📊 Ejecutando Métricas de Impacto seeds...');
+      await this.metricaImpactoSeedService.executeSeed();
+
+      // 8. Después DisciplinaCatalogo (depende de CfsCatalogo)
       this.logger.log('📚 Ejecutando Disciplina Catálogo seeds...');
       await this.disciplinaCatalogoSeedService.executeSeed();
 
-      // 7. Finalmente ModeloContribuyente (depende de CfsCatalogo y StatusModeloCatalogo)
+      // 9. Después ModeloContribuyente (depende de CfsCatalogo y StatusModeloCatalogo)
       this.logger.log('🤝 Ejecutando Modelo Contribuyente seeds...');
       await this.modeloContribuyenteSeedService.executeSeed();
 
-      // 8. Por último Dashboard (depende de BU, Disciplina, StatusModelo y CFS)
+      // 10. Después Dashboard (depende de BU, Disciplina, StatusModelo y CFS)
       this.logger.log('📈 Ejecutando Dashboard seeds...');
       await this.dashboardSeedService.executeSeed();
+
+      // 11. Finalmente Incidencias (depende de BU, CFS y Operativas)
+      this.logger.log('🚨 Ejecutando Incidencias seeds...');
+      await this.incidenciasSeedService.executeSeed();
 
       this.logger.log('✅ Proceso de seeds completado exitosamente');
     } catch (error) {

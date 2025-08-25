@@ -8,6 +8,9 @@ import { StatusModeloCatalogoModule } from '../../api/status-modelo-catalogo/sta
 import { StatusMedicionModule } from '../../api/status-medicion/status-medicion.module';
 import { ModeloContribuyenteModule } from '../../api/modelo-contribuyente/modelo-contribuyente.module';
 import { DashboardModule } from '../../api/dashboard/dashboard.module';
+import { OperativaCatalogoModule } from '../../api/operativas-catalogo/operativas-catalogo.module';
+import { MetricaImpactoModule } from '../../api/metricas-impacto/metricas-impacto.module';
+import { IncidenciasModule } from '../../api/incidencias/incidencias.module';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { DashboardModule } from '../../api/dashboard/dashboard.module';
     StatusMedicionModule,
     ModeloContribuyenteModule,
     DashboardModule,
+    OperativaCatalogoModule,
+    MetricaImpactoModule,
+    IncidenciasModule,
   ],
   providers: [SeedOrchestratorService],
   exports: [SeedOrchestratorService],
