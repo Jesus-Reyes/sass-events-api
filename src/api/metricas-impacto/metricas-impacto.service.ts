@@ -22,15 +22,6 @@ export class MetricaImpactoService {
 
   async create(createMetricaImpactoDto: CreateMetricaImpactoDto) {
     try {
-      // Verificar si ya existe una métrica con el mismo metricsId
-      const existingMetrica = await this.metricaImpactoRepository.findOne({
-        where: { metricsId: createMetricaImpactoDto.metricsId }
-      });
-
-      if (existingMetrica) {
-        throw new MetricaImpactoAlreadyExistsException(createMetricaImpactoDto.metricsId);
-      }
-
       // Crear la nueva métrica
       const metricaImpacto = this.metricaImpactoRepository.create({
         ...createMetricaImpactoDto,
@@ -43,7 +34,6 @@ export class MetricaImpactoService {
         status: 201,
         data: {
           id: savedMetrica.id,
-          metricsId: savedMetrica.metricsId,
           fechaImpacto: savedMetrica.fechaImpacto,
           series: savedMetrica.series,
           active: savedMetrica.active,
@@ -78,7 +68,6 @@ export class MetricaImpactoService {
         status: 200,
         data: metricas.map(metrica => ({
           id: metrica.id,
-          metricsId: metrica.metricsId,
           fechaImpacto: metrica.fechaImpacto,
           series: metrica.series,
           active: metrica.active,
@@ -107,7 +96,6 @@ export class MetricaImpactoService {
         status: 200,
         data: {
           id: metricaImpacto.id,
-          metricsId: metricaImpacto.metricsId,
           fechaImpacto: metricaImpacto.fechaImpacto,
           series: metricaImpacto.series,
           active: metricaImpacto.active,
@@ -127,36 +115,6 @@ export class MetricaImpactoService {
     }
   }
 
-  async findByMetricsId(metricsId: string) {
-    try {
-      const metricaImpacto = await this.metricaImpactoRepository.findOne({
-        where: { metricsId }
-      });
-
-      if (!metricaImpacto) {
-        throw new MetricaImpactoNotFoundException(metricsId);
-      }
-
-      return {
-        status: 200,
-        data: {
-          metricsId: metricaImpacto.metricsId,
-          fechaImpacto: metricaImpacto.fechaImpacto,
-          series: metricaImpacto.series
-        },
-        message: "Métrica de impacto obtenida exitosamente"
-      };
-    } catch (error) {
-      this.logger.error(`Error fetching Métrica Impacto with metricsId ${metricsId}`, error);
-      
-      if (error instanceof MetricaImpactoNotFoundException) {
-        throw error;
-      }
-
-      throw new DatabaseException();
-    }
-  }
-
   async update(id: number, updateMetricaImpactoDto: UpdateMetricaImpactoDto) {
     try {
       const metricaImpacto = await this.metricaImpactoRepository.findOne({
@@ -165,17 +123,6 @@ export class MetricaImpactoService {
 
       if (!metricaImpacto) {
         throw new MetricaImpactoNotFoundException(id);
-      }
-
-      // Si se está actualizando el metricsId, verificar que no exista otro con el mismo ID
-      if (updateMetricaImpactoDto.metricsId && updateMetricaImpactoDto.metricsId !== metricaImpacto.metricsId) {
-        const existingMetrica = await this.metricaImpactoRepository.findOne({
-          where: { metricsId: updateMetricaImpactoDto.metricsId }
-        });
-
-        if (existingMetrica && existingMetrica.id !== id) {
-          throw new MetricaImpactoAlreadyExistsException(updateMetricaImpactoDto.metricsId);
-        }
       }
 
       // Actualizar
@@ -194,7 +141,6 @@ export class MetricaImpactoService {
         status: 200,
         data: {
           id: updatedMetrica.id,
-          metricsId: updatedMetrica.metricsId,
           fechaImpacto: updatedMetrica.fechaImpacto,
           series: updatedMetrica.series,
           active: updatedMetrica.active,

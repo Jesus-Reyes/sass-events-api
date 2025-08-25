@@ -19,7 +19,7 @@ interface Incidencia {
   occurrenceDate: string; // Fecha de ocurrencia
   windowStart: string; // Ventana de inicio (ISO string)
   windowEnd: string; // Ventana de fin (ISO string)
-  metricsId: string; // Referencia a métricas de impacto
+  metricsId: string; // ID de la métrica de impacto (referencia al id de metricas_impacto)
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -59,7 +59,7 @@ POST /incidencias
   "occurrenceDate": "2025-07-31",
   "windowStart": "2025-07-31T08:43:00Z",
   "windowEnd": "2025-07-31T10:15:00Z",
-  "metricsId": "IMPACT_SERIES_001"
+  "metricsId": "1"
 }
 ```
 
@@ -81,7 +81,7 @@ POST /incidencias
     "occurrenceDate": "2025-07-31",
     "windowStart": "2025-07-31T08:43:00Z",
     "windowEnd": "2025-07-31T10:15:00Z",
-    "metricsId": "IMPACT_SERIES_001",
+    "metricsId": "1",
     "active": true,
     "createdAt": "2025-08-25T10:00:00Z",
     "updatedAt": "2025-08-25T10:00:00Z"
@@ -203,7 +203,7 @@ DELETE /incidencias/:id
 - **occurrenceDate**: Requerido, formato fecha ISO
 - **windowStart**: Requerido, formato ISO 8601
 - **windowEnd**: Requerido, formato ISO 8601
-- **metricsId**: Requerido, máximo 100 caracteres
+- **metricsId**: Requerido, máximo 100 caracteres, debe ser el ID de una métrica de impacto existente
 
 ## Incidencias Predefinidas
 
@@ -248,7 +248,7 @@ El endpoint `/incidencias/frontend` retorna solo los datos esenciales para la ta
   "occurrenceDate": "2025-07-31",
   "windowStart": "2025-07-31T08:43:00Z",
   "windowEnd": "2025-07-31T10:15:00Z",
-  "metricsId": "IMPACT_SERIES"
+  "metricsId": "1"
 }
 ```
 

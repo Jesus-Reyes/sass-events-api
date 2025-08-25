@@ -91,6 +91,33 @@ Esta guía te ayudará a configurar Postman para probar todos los endpoints de l
 - 🔄 Cambiar Status del Modelo
 - ❌ Eliminar Modelo Contribuyente
 
+### 📁 Operativas Catálogo
+- ✅ Crear Operativa
+- 📋 Obtener todas las Operativas
+- 🔍 Obtener Operativa por ID
+- ✏️ Actualizar Operativa
+- ❌ Eliminar Operativa
+
+### 📁 Métricas de Impacto
+- ✅ Crear Métrica de Impacto
+- 📋 Obtener todas las Métricas de Impacto
+- 🔍 Obtener Métrica de Impacto por ID
+- ✏️ Actualizar Métrica de Impacto
+- ❌ Eliminar Métrica de Impacto
+
+### 📁 Incidencias
+- ✅ Crear Incidencia
+- 📋 Obtener todas las Incidencias
+- 🎯 Obtener Incidencias para Frontend (optimizado)
+- 🔍 Obtener Incidencia por ID
+- ✏️ Actualizar Incidencia
+- ❌ Eliminar Incidencia
+- 🔄 **Flujo Completo - Incidencias**:
+  - 1️⃣ Crear Incidencia de Prueba
+  - 2️⃣ Verificar Frontend Data
+  - 3️⃣ Actualizar Severidad
+  - 4️⃣ Obtener con Relaciones
+
 ### 📁 Rollback (Limpieza de Datos)
 - 🏥 Health Check - Verificar estado del servicio
 - 📊 Obtener Estadísticas - Ver conteo de registros por tabla
@@ -108,6 +135,13 @@ Esta guía te ayudará a configurar Postman para probar todos los endpoints de l
 - **Flujo 1**: Crear CFS desde cero (Geografia → BU → CFS)
 - **Flujo 2**: Crear Disciplina con CFS
 - **Flujo 3**: Gestión de Modelos de Contribuyente
+- **Flujo 4**: Rollback Completo (Estadísticas → Rollback → Verificación)
+- **Flujo 5**: **Gestión de Incidencias Completa** 🆕
+  - ✅ Crear Operativas y Métricas de Impacto
+  - 📊 Crear Incidencia con relaciones
+  - 🎯 Verificar endpoint optimizado para frontend
+  - ✏️ Actualizar severidad de incidencia
+  - 🔍 Obtener incidencia con todas las relaciones
 - **Flujo 4**: Rollback Completo (Estadísticas → Rollback → Verificación)
 
 ## Funcionalidades Incluidas
@@ -163,6 +197,69 @@ Cada request incluye tests automáticos que verifican:
 1. Cada request incluye descripción detallada
 2. Los ejemplos de body muestran la estructura esperada
 3. Las respuestas documentan el formato de salida
+
+## Nuevos Módulos - Incidencias API 🆕
+
+### 🎯 Características Especiales de Incidencias
+
+#### **Endpoint Optimizado para Frontend**
+- `GET /incidencias/frontend` - Retorna datos simplificados para tablas
+- Estructura optimizada para visualización rápida
+- Sin expansión de relaciones para mejor performance
+
+#### **Métricas de Impacto con Series Temporales**
+- Datos JSONB con series por hora
+- Comparación entre día de impacto y días normales
+- Estructura lista para gráficos de tipo línea
+
+#### **Operativas Catálogo**
+- 10 tipos predefinidos de operativas
+- Categorización por tipo (Comunicación, Acceso, etc.)
+- Relación directa con incidencias
+
+### 🔧 Variables Específicas Nuevas
+
+```json
+{
+  "operativaId": "1",
+  "metricaImpactoId": "1", 
+  "incidenciaId": "1"
+}
+```
+
+### 📊 Estructura de Datos Destacada
+
+#### **Incidencia Completa**
+```json
+{
+  "incidentId": "INC000001234567",
+  "hallazgo": {
+    "start": "2025-08-25T09:15:00Z",
+    "end": "2025-08-25T10:30:00Z",
+    "severity": "high"
+  },
+  "windowStart": "2025-08-25T09:00:00Z",
+  "windowEnd": "2025-08-25T11:00:00Z",
+  "metricsId": "1"
+}
+```
+
+#### **Métrica de Impacto con Series**
+```json
+{
+  "fechaImpacto": "2025-08-25",
+  "series": [
+    {
+      "fecha": "2025-08-25",
+      "tipo": "impacto",
+      "data": [
+        {"hora": "08:00", "actividad": 5200},
+        {"hora": "09:00", "actividad": 7800}
+      ]
+    }
+  ]
+}
+```
 
 ## Personalización
 

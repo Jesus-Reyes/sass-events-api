@@ -11,7 +11,6 @@ Las Métricas de Impacto almacenan datos de series temporales que permiten visua
 ```typescript
 interface MetricaImpacto {
   id: number;
-  metricsId: string; // Identificador único de la métrica
   fechaImpacto: string; // Fecha del día de impacto
   series: SeriesData[]; // Array de series temporales
   active: boolean;
@@ -41,7 +40,6 @@ POST /metricas-impacto
 **Body:**
 ```json
 {
-  "metricsId": "IMPACT_SERIES_001",
   "fechaImpacto": "2025-07-17",
   "series": [
     {
@@ -75,9 +73,9 @@ GET /metricas-impacto
 GET /metricas-impacto/:id
 ```
 
-### 4. Obtener Métrica por metricsId
+### 4. Obtener Métrica por ID
 ```
-GET /metricas-impacto/metrics/:metricsId
+GET /metricas-impacto/:id
 ```
 
 **Respuesta específica para frontend:**
@@ -85,7 +83,7 @@ GET /metricas-impacto/metrics/:metricsId
 {
   "status": 200,
   "data": {
-    "metricsId": "IMPACT_SERIES_001",
+    "id": 1,
     "fechaImpacto": "2025-07-17",
     "series": [
       {
@@ -114,8 +112,7 @@ DELETE /metricas-impacto/:id
 
 ## Validaciones
 
-- **metricsId**: Requerido, máximo 100 caracteres, único
-- **fechaImpacto**: Requerido, formato fecha ISO
+- **fechaImpacto**: Requerido, formato fecha ISO (YYYY-MM-DD)
 - **series**: Requerido, array de objetos SeriesData
 - **series.fecha**: Requerido, formato fecha ISO
 - **series.tipo**: Requerido, debe ser 'impacto' o 'comparado'
@@ -145,12 +142,14 @@ Cada métrica incluye:
 
 ## Integración con Frontend
 
-El endpoint `/metricas-impacto/metrics/:metricsId` está optimizado para el frontend y retorna exactamente la estructura necesaria para las gráficas:
+El endpoint `/metricas-impacto/:id` está optimizado para el frontend y retorna exactamente la estructura necesaria para las gráficas:
 
 ```typescript
 // Estructura optimizada para Chart.js o similar
 {
-  metricsId: string,
+  ```javascript
+{
+  id: number,
   fechaImpacto: string,
   series: [
     {
@@ -168,9 +167,9 @@ El endpoint `/metricas-impacto/metrics/:metricsId` está optimizado para el fron
 
 - **400 Bad Request**: Datos de entrada inválidos
 - **404 Not Found**: Métrica no encontrada
-- **409 Conflict**: Métrica con metricsId duplicado
+- **409 Conflict**: Métrica duplicada para la misma fecha
 - **500 Internal Server Error**: Error interno del servidor
 
 ## Relaciones
 
-- **Referenciada por**: Las incidencias referencian las métricas a través del campo `metricsId`
+- **Referenciada por**: Las incidencias referencian las métricas a través del campo `metricsId` (que almacena el ID de la métrica)

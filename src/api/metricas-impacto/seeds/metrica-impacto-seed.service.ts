@@ -27,7 +27,6 @@ export class MetricaImpactoSeedService {
 
       const metricas = [
         {
-          metricsId: 'IMPACT_SERIES_001',
           fechaImpacto: '2025-07-17',
           series: this.generateSeriesData('2025-07-17', [
             '2025-06-19',
@@ -36,7 +35,6 @@ export class MetricaImpactoSeedService {
           ])
         },
         {
-          metricsId: 'IMPACT_SERIES_002',
           fechaImpacto: '2025-07-31',
           series: this.generateSeriesData('2025-07-31', [
             '2025-06-30',
@@ -45,7 +43,6 @@ export class MetricaImpactoSeedService {
           ])
         },
         {
-          metricsId: 'IMPACT_SERIES_003',
           fechaImpacto: '2025-08-15',
           series: this.generateSeriesData('2025-08-15', [
             '2025-07-15',

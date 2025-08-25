@@ -49,6 +49,21 @@
       "key": "dashboardId",
       "value": "1",
       "type": "string"
+    },
+    {
+      "key": "operativaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "metricaImpactoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "incidenciaId",
+      "value": "1",
+      "type": "string"
     }
   ],
   "item": [
@@ -1385,6 +1400,361 @@
                   "path": ["api", "dashboard", "search", "by-bu", "1"]
                 },
                 "description": "Probar filtros de búsqueda por BU"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Operativas Catálogo",
+      "item": [
+        {
+          "name": "Crear Operativa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Proceso de validación\",\n  \"description\": \"Proceso automatizado para validación de datos\",\n  \"tipo\": \"Validación\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/operativas-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["operativas-catalogo"]
+            },
+            "description": "Crear una nueva operativa en el catálogo"
+          }
+        },
+        {
+          "name": "Obtener todas las Operativas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/operativas-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["operativas-catalogo"]
+            },
+            "description": "Obtener listado completo de operativas del catálogo"
+          }
+        },
+        {
+          "name": "Obtener Operativa por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/operativas-catalogo/{{operativaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["operativas-catalogo", "{{operativaId}}"]
+            },
+            "description": "Obtener una operativa específica por su ID"
+          }
+        },
+        {
+          "name": "Actualizar Operativa",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Proceso de validación actualizado\",\n  \"description\": \"Proceso automatizado para validación de datos con mejoras\",\n  \"tipo\": \"Validación Avanzada\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/operativas-catalogo/{{operativaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["operativas-catalogo", "{{operativaId}}"]
+            },
+            "description": "Actualizar los datos de una operativa existente"
+          }
+        },
+        {
+          "name": "Eliminar Operativa",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/operativas-catalogo/{{operativaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["operativas-catalogo", "{{operativaId}}"]
+            },
+            "description": "Eliminar (desactivar) una operativa del catálogo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Métricas de Impacto",
+      "item": [
+        {
+          "name": "Crear Métrica de Impacto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fechaImpacto\": \"2025-08-25\",\n  \"series\": [\n    {\n      \"fecha\": \"2025-08-25\",\n      \"tipo\": \"impacto\",\n      \"data\": [\n        {\n          \"hora\": \"08:00\",\n          \"actividad\": 5200\n        },\n        {\n          \"hora\": \"09:00\",\n          \"actividad\": 7800\n        },\n        {\n          \"hora\": \"10:00\",\n          \"actividad\": 6500\n        }\n      ]\n    },\n    {\n      \"fecha\": \"2025-07-25\",\n      \"tipo\": \"comparado\",\n      \"data\": [\n        {\n          \"hora\": \"08:00\",\n          \"actividad\": 2100\n        },\n        {\n          \"hora\": \"09:00\",\n          \"actividad\": 2300\n        },\n        {\n          \"hora\": \"10:00\",\n          \"actividad\": 2200\n        }\n      ]\n    }\n  ],\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/metricas-impacto",
+              "host": ["{{baseUrl}}"],
+              "path": ["metricas-impacto"]
+            },
+            "description": "Crear una nueva métrica de impacto con series temporales"
+          }
+        },
+        {
+          "name": "Obtener todas las Métricas de Impacto",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/metricas-impacto",
+              "host": ["{{baseUrl}}"],
+              "path": ["metricas-impacto"]
+            },
+            "description": "Obtener listado completo de métricas de impacto"
+          }
+        },
+        {
+          "name": "Obtener Métrica de Impacto por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/metricas-impacto/{{metricaImpactoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["metricas-impacto", "{{metricaImpactoId}}"]
+            },
+            "description": "Obtener una métrica de impacto específica para gráficos del frontend"
+          }
+        },
+        {
+          "name": "Actualizar Métrica de Impacto",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fechaImpacto\": \"2025-08-26\",\n  \"series\": [\n    {\n      \"fecha\": \"2025-08-26\",\n      \"tipo\": \"impacto\",\n      \"data\": [\n        {\n          \"hora\": \"08:00\",\n          \"actividad\": 5500\n        },\n        {\n          \"hora\": \"09:00\",\n          \"actividad\": 8100\n        }\n      ]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/metricas-impacto/{{metricaImpactoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["metricas-impacto", "{{metricaImpactoId}}"]
+            },
+            "description": "Actualizar los datos de una métrica de impacto existente"
+          }
+        },
+        {
+          "name": "Eliminar Métrica de Impacto",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/metricas-impacto/{{metricaImpactoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["metricas-impacto", "{{metricaImpactoId}}"]
+            },
+            "description": "Eliminar (desactivar) una métrica de impacto"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Incidencias",
+      "item": [
+        {
+          "name": "Crear Incidencia",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"incidentId\": \"INC000001234567\",\n  \"operativaId\": 1,\n  \"hallazgo\": {\n    \"start\": \"2025-08-25T09:15:00Z\",\n    \"end\": \"2025-08-25T10:30:00Z\",\n    \"severity\": \"high\"\n  },\n  \"buId\": 1,\n  \"cfsId\": 1,\n  \"occurrenceDate\": \"2025-08-25\",\n  \"windowStart\": \"2025-08-25T09:00:00Z\",\n  \"windowEnd\": \"2025-08-25T11:00:00Z\",\n  \"metricsId\": \"1\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/incidencias",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidencias"]
+            },
+            "description": "Crear una nueva incidencia en el sistema"
+          }
+        },
+        {
+          "name": "Obtener todas las Incidencias",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/incidencias",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidencias"]
+            },
+            "description": "Obtener listado completo de incidencias con relaciones expandidas"
+          }
+        },
+        {
+          "name": "Obtener Incidencias para Frontend",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/incidencias/frontend",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidencias", "frontend"]
+            },
+            "description": "Obtener incidencias optimizadas para el frontend (formato tabla)"
+          }
+        },
+        {
+          "name": "Obtener Incidencia por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/incidencias/{{incidenciaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidencias", "{{incidenciaId}}"]
+            },
+            "description": "Obtener una incidencia específica con todas sus relaciones"
+          }
+        },
+        {
+          "name": "Actualizar Incidencia",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hallazgo\": {\n    \"start\": \"2025-08-25T09:15:00Z\",\n    \"end\": \"2025-08-25T10:45:00Z\",\n    \"severity\": \"critical\"\n  },\n  \"windowEnd\": \"2025-08-25T11:30:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/incidencias/{{incidenciaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidencias", "{{incidenciaId}}"]
+            },
+            "description": "Actualizar los datos de una incidencia existente"
+          }
+        },
+        {
+          "name": "Eliminar Incidencia",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/incidencias/{{incidenciaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["incidencias", "{{incidenciaId}}"]
+            },
+            "description": "Eliminar (desactivar) una incidencia del sistema"
+          }
+        },
+        {
+          "name": "Flujo Completo - Incidencias",
+          "item": [
+            {
+              "name": "1. Crear Incidencia de Prueba",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"incidentId\": \"INC000001999999\",\n  \"operativaId\": 1,\n  \"hallazgo\": {\n    \"start\": \"2025-08-25T14:00:00Z\",\n    \"end\": \"2025-08-25T15:30:00Z\",\n    \"severity\": \"medium\"\n  },\n  \"buId\": 1,\n  \"cfsId\": 1,\n  \"occurrenceDate\": \"2025-08-25\",\n  \"windowStart\": \"2025-08-25T13:45:00Z\",\n  \"windowEnd\": \"2025-08-25T16:00:00Z\",\n  \"metricsId\": \"1\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/incidencias",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["incidencias"]
+                },
+                "description": "Crear incidencia para pruebas del flujo completo"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Guardar el ID de la incidencia creada",
+                      "if (pm.response.code === 201) {",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.environment.set('incidenciaId', responseJson.data.id);",
+                      "    console.log('Incidencia creada con ID:', responseJson.data.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "2. Verificar Frontend Data",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/incidencias/frontend",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["incidencias", "frontend"]
+                },
+                "description": "Verificar que la incidencia aparece en el endpoint optimizado para frontend"
+              }
+            },
+            {
+              "name": "3. Actualizar Severidad",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hallazgo\": {\n    \"start\": \"2025-08-25T14:00:00Z\",\n    \"end\": \"2025-08-25T15:30:00Z\",\n    \"severity\": \"critical\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/incidencias/{{incidenciaId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["incidencias", "{{incidenciaId}}"]
+                },
+                "description": "Actualizar la severidad de la incidencia a crítica"
+              }
+            },
+            {
+              "name": "4. Obtener con Relaciones",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/incidencias/{{incidenciaId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["incidencias", "{{incidenciaId}}"]
+                },
+                "description": "Verificar que se actualización correctamente y obtener con todas las relaciones"
               }
             }
           ]

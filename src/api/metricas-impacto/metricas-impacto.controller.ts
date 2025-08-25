@@ -22,11 +22,6 @@ export class MetricaImpactoController {
     return this.metricaImpactoService.findOne(id);
   }
 
-  @Get('metrics/:metricsId')
-  findByMetricsId(@Param('metricsId') metricsId: string) {
-    return this.metricaImpactoService.findByMetricsId(metricsId);
-  }
-
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateMetricaImpactoDto: UpdateMetricaImpactoDto) {
     return this.metricaImpactoService.update(id, updateMetricaImpactoDto);

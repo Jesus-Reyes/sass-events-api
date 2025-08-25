@@ -5,6 +5,7 @@ import { Incidencia, HallazgoData } from '../entities/incidencia.entity';
 import { BuCatalogo } from '../../bu-catalogo/entities/bu-catalogo.entity';
 import { CfsCatalogo } from '../../cfs-catalogo/entities/cfs-catalogo.entity';
 import { OperativaCatalogo } from '../../operativas-catalogo/entities/operativa-catalogo.entity';
+import { MetricaImpacto } from '../../metricas-impacto/entities/metrica-impacto.entity';
 
 @Injectable()
 export class IncidenciasSeedService {
@@ -19,6 +20,8 @@ export class IncidenciasSeedService {
     private readonly cfsCatalogoRepository: Repository<CfsCatalogo>,
     @InjectRepository(OperativaCatalogo)
     private readonly operativaCatalogoRepository: Repository<OperativaCatalogo>,
+    @InjectRepository(MetricaImpacto)
+    private readonly metricaImpactoRepository: Repository<MetricaImpacto>,
   ) {}
 
   async executeSeed() {
@@ -38,9 +41,10 @@ export class IncidenciasSeedService {
       const buCatalogos = await this.buCatalogoRepository.find({ where: { active: true } });
       const cfsCatalogos = await this.cfsCatalogoRepository.find({ where: { active: true } });
       const operativaCatalogos = await this.operativaCatalogoRepository.find({ where: { active: true } });
+      const metricasImpacto = await this.metricaImpactoRepository.find({ where: { active: true } });
 
-      if (buCatalogos.length === 0 || cfsCatalogos.length === 0 || operativaCatalogos.length === 0) {
-        this.logger.warn('No se encontraron datos suficientes para crear incidencias. Verificar que existan BUs, CFS y Operativas.');
+      if (buCatalogos.length === 0 || cfsCatalogos.length === 0 || operativaCatalogos.length === 0 || metricasImpacto.length === 0) {
+        this.logger.warn('No se encontraron datos suficientes para crear incidencias. Verificar que existan BUs, CFS, Operativas y Métricas de Impacto.');
         return;
       }
 
@@ -58,7 +62,7 @@ export class IncidenciasSeedService {
           occurrenceDate: '2025-07-31',
           windowStart: '2025-07-31T08:43:00Z',
           windowEnd: '2025-07-31T10:15:00Z',
-          metricsId: 'IMPACT_SERIES_001'
+          metricsId: metricasImpacto.find(m => m.fechaImpacto === '2025-07-31')?.id.toString() || metricasImpacto[0].id.toString()
         },
         {
           incidentId: 'CRQ000001045874',
@@ -73,7 +77,7 @@ export class IncidenciasSeedService {
           occurrenceDate: '2025-07-31',
           windowStart: '2025-07-31T08:43:00Z',
           windowEnd: '2025-07-31T10:15:00Z',
-          metricsId: 'IMPACT_SERIES_002'
+          metricsId: metricasImpacto.find(m => m.fechaImpacto === '2025-07-31')?.id.toString() || metricasImpacto[0].id.toString()
         },
         {
           incidentId: 'INC000001045875',
@@ -88,7 +92,7 @@ export class IncidenciasSeedService {
           occurrenceDate: '2025-07-31',
           windowStart: '2025-07-31T08:43:00Z',
           windowEnd: '2025-07-31T10:15:00Z',
-          metricsId: 'IMPACT_SERIES_003'
+          metricsId: metricasImpacto.find(m => m.fechaImpacto === '2025-08-15')?.id.toString() || metricasImpacto[0].id.toString()
         },
         {
           incidentId: 'INC000001045876',
@@ -103,7 +107,7 @@ export class IncidenciasSeedService {
           occurrenceDate: '2025-08-01',
           windowStart: '2025-08-01T14:00:00Z',
           windowEnd: '2025-08-01T16:00:00Z',
-          metricsId: 'IMPACT_SERIES_001'
+          metricsId: metricasImpacto.find(m => m.fechaImpacto === '2025-07-17')?.id.toString() || metricasImpacto[0].id.toString()
         }
       ];
 

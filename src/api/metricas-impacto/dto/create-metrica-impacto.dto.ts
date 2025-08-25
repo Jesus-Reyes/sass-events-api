@@ -1,4 +1,4 @@
-import { IsString, IsDateString, IsArray, IsOptional, IsBoolean, MaxLength, ValidateNested } from 'class-validator';
+import { IsString, IsDateString, IsArray, IsOptional, IsBoolean, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ActivityDataDto {
@@ -23,10 +23,6 @@ export class SeriesDataDto {
 }
 
 export class CreateMetricaImpactoDto {
-  @IsString()
-  @MaxLength(100)
-  metricsId: string;
-
   @IsDateString()
   fechaImpacto: string;
 

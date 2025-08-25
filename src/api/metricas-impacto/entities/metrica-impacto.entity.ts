@@ -5,9 +5,6 @@ export class MetricaImpacto {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'metrics_id', length: 100, unique: true })
-  metricsId: string; // Ej: "IMPACT_SERIES_001"
-
   @Column({ name: 'fecha_impacto', type: 'date' })
   fechaImpacto: string; // Fecha del día de impacto
 
