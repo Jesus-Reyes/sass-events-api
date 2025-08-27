@@ -23,9 +23,7 @@ import { ModeloEvento } from '../../api/modelo-eventos/entities/modelo-evento.en
 import { Geography } from '../../api/geography-catalogo/entities/geography.entity';
 import { BuCatalogo } from '../../api/bu-catalogo/entities/bu-catalogo.entity';
 import { CfsCatalogo } from '../../api/cfs-catalogo/entities/cfs-catalogo.entity';
-import { ServiceOwnersSeed } from '../../api/service-owners-catalogo/seed/service-owners-catalogo-seed.service';
-import { PartnershipSeed } from '../../api/partnership-catalogo/seed/partnership-catalogo-seed.service';
-import { ModelosEventosSeed } from '../../api/modelo-eventos/seed/modelo-eventos-seed.service';
+
 
 
 @Module({
@@ -55,9 +53,6 @@ import { ModelosEventosSeed } from '../../api/modelo-eventos/seed/modelo-eventos
   ],
   providers: [
     SeedOrchestratorService,
-    ServiceOwnersSeed,
-    PartnershipSeed,
-    ModelosEventosSeed
   ],
   exports: [SeedOrchestratorService],
 })

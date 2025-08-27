@@ -14,7 +14,7 @@ import { IncidenciasSeedService } from '../../api/incidencias/seeds/incidencias-
 
 import { ServiceOwnersSeed } from 'src/api/service-owners-catalogo/seed/service-owners-catalogo-seed.service';
 import { PartnershipSeed } from 'src/api/partnership-catalogo/seed/partnership-catalogo-seed.service';
-import { ModelosEventosSeed } from 'src/api/modelo-eventos/seed/modelo-eventos-seed.service';
+
 
 @Injectable()
 export class SeedOrchestratorService implements OnModuleInit {
@@ -34,7 +34,7 @@ export class SeedOrchestratorService implements OnModuleInit {
     private readonly incidenciasSeedService: IncidenciasSeedService,
     private readonly serviceOwnersSeed: ServiceOwnersSeed,
     private readonly partnershipSeed: PartnershipSeed,
-    private readonly modelosEventosSeed: ModelosEventosSeed,
+    
   ) {}
 
   async onModuleInit() {
@@ -98,8 +98,7 @@ export class SeedOrchestratorService implements OnModuleInit {
       await this.incidenciasSeedService.executeSeed();
 
       // 14. Modelos de Eventos (depende de Geography, BU, CFS, ServiceOwners y Partnerships)
-      this.logger.log('📋 Ejecutando Modelos de Eventos seeds...');
-      await this.modelosEventosSeed.seed();
+   
 
       this.logger.log('✅ Proceso de seeds completado exitosamente');
     } catch (error) {

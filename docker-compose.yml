@@ -1,20 +1,20 @@
 version: '3.8'
 
 services:
-  api:
-    build: .
-    container_name: nest-api
-    ports:
-      - "3000:3000"
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=5432
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - PORT=3000
-    depends_on:
-      - db
+  # api:
+  #   build: .
+  #   container_name: nest-api
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - DB_HOST=${DB_HOST}
+  #     - DB_PORT=5432
+  #     - DB_USER=${DB_USER}
+  #     - DB_PASSWORD=${DB_PASSWORD}
+  #     - DB_NAME=${DB_NAME}
+  #     - PORT=3000
+  #   depends_on:
+  #     - db
 
   db:
     container_name: sass-events

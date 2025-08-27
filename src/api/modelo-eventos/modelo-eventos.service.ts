@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, QueryFailedError } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateModeloEventoDto } from './dto/create-modelo-evento.dto';
 import { UpdateModeloEventoDto } from './dto/update-modelo-evento.dto';
 import { ModeloEvento } from './entities/modelo-evento.entity';
@@ -10,7 +10,6 @@ import { ServiceOwner } from '../service-owners-catalogo/entities/service-owner.
 import { StatusModeloCatalogo } from '../status-modelo-catalogo/entities/status-modelo-catalogo.entity';
 import { StatusMedicion } from '../status-medicion-catalogo/entities/status-medicion.entity';
 import { Partnership } from '../partnership-catalogo/entities/partnership.entity';
-
 import {
   ModeloEventoNotFoundException,
   BuCatalogoNotFoundException,
@@ -19,9 +18,17 @@ import {
   StatusModeloNotFoundException,
   StatusMedicionNotFoundException,
   PartnershipNotFoundException,
-  InvalidDateRangeException,
-  DatabaseException
+  InvalidDateRangeException
 } from './exceptions/modelo-evento.exceptions';
+
+interface DateValidationData {
+  fechaAlta: string | Date;
+  fechaActivacion: string | Date;
+  fechaInicioPeriodoGarantia: string | Date;
+  fechaInicioOficial: string | Date;
+  fechaInicioVersion: string | Date;
+  fechaInactivacion?: string | Date | null;
+}
 
 @Injectable()
 export class ModeloEventosService {
@@ -37,7 +44,7 @@ export class ModeloEventosService {
     @InjectRepository(ServiceOwner)
     private readonly serviceOwnerRepository: Repository<ServiceOwner>,
     @InjectRepository(StatusModeloCatalogo)
-    private readonly statusModeloRepository: Repository<StatusModeloCatalogo>,
+    private readonly statusModeloCatalogoRepository: Repository<StatusModeloCatalogo>,
     @InjectRepository(StatusMedicion)
     private readonly statusMedicionRepository: Repository<StatusMedicion>,
     @InjectRepository(Partnership)
@@ -46,118 +53,148 @@ export class ModeloEventosService {
 
   async create(createModeloEventoDto: CreateModeloEventoDto) {
     try {
-      // Validar todas las entidades relacionadas
-      await this.validateRelatedEntities(createModeloEventoDto);
+      // Validar que existan las relaciones
+      await this.validateBuCatalogo(createModeloEventoDto.buId);
+      await this.validateCfsCatalogo(createModeloEventoDto.cfsId);
+      await this.validateServiceOwner(createModeloEventoDto.serviceOwnerId);
+      await this.validateStatusModelo(createModeloEventoDto.estatusModeloId);
+      await this.validateStatusMedicion(createModeloEventoDto.estatusMedicionId);
+      await this.validatePartnership(createModeloEventoDto.partnershipId);
+      
+      // Validar secuencia de fechas
+      this.validateDateSequence(createModeloEventoDto);
 
-      // Validar fechas
-      this.validateDateRanges(createModeloEventoDto);
-
-      // Crear el nuevo modelo de evento
-      const modeloEvento = new ModeloEvento();
-      modeloEvento.buId = createModeloEventoDto.buId;
-      modeloEvento.cfsId = createModeloEventoDto.cfsId;
-      modeloEvento.serviceOwnerId = createModeloEventoDto.serviceOwnerId;
-      modeloEvento.estatusModeloId = createModeloEventoDto.estatusModeloId;
-      modeloEvento.estatusMedicionId = createModeloEventoDto.estatusMedicionId;
-      modeloEvento.modelo = createModeloEventoDto.modelo;
-      modeloEvento.fuente = createModeloEventoDto.fuente;
-      modeloEvento.metaDisponibilidad = createModeloEventoDto.metaDisponibilidad;
-      modeloEvento.partnershipId = createModeloEventoDto.partnershipId;
-      modeloEvento.estatusMedicionPartnership = createModeloEventoDto.estatusMedicionPartnership;
-      modeloEvento.fechaAlta = new Date(createModeloEventoDto.fechaAlta);
-      modeloEvento.fechaActivacion = new Date(createModeloEventoDto.fechaActivacion);
-      modeloEvento.fechaInicioPeriodoGarantia = new Date(createModeloEventoDto.fechaInicioPeriodoGarantia);
-      modeloEvento.fechaInicioOficial = new Date(createModeloEventoDto.fechaInicioOficial);
-      modeloEvento.fechaInicioVersion = new Date(createModeloEventoDto.fechaInicioVersion);
-      modeloEvento.version = createModeloEventoDto.version;
-      modeloEvento.fechaInactivacion = createModeloEventoDto.fechaInactivacion ? new Date(createModeloEventoDto.fechaInactivacion) : null;
-      modeloEvento.metaPartnershipExpectedSLA = createModeloEventoDto.metaPartnershipExpectedSLA ?? 0.0;
-      modeloEvento.metaPartnershipMinimumSLA = createModeloEventoDto.metaPartnershipMinimumSLA ?? 0.0;
-      modeloEvento.metaPartnershipStretchedSLA = createModeloEventoDto.metaPartnershipStretchedSLA ?? 0.0;
-      modeloEvento.definirFuncionalidadDependencia = createModeloEventoDto.definirFuncionalidadDependencia || '';
-      modeloEvento.active = createModeloEventoDto.active ?? true;
+      const modeloEvento = this.modeloEventoRepository.create({
+        ...createModeloEventoDto,
+        fechaAlta: new Date(createModeloEventoDto.fechaAlta),
+        fechaActivacion: new Date(createModeloEventoDto.fechaActivacion),
+        fechaInicioPeriodoGarantia: new Date(createModeloEventoDto.fechaInicioPeriodoGarantia),
+        fechaInicioOficial: new Date(createModeloEventoDto.fechaInicioOficial),
+        fechaInicioVersion: new Date(createModeloEventoDto.fechaInicioVersion),
+        fechaInactivacion: createModeloEventoDto.fechaInactivacion ? new Date(createModeloEventoDto.fechaInactivacion) : null,
+      });
 
       const savedModelo = await this.modeloEventoRepository.save(modeloEvento);
 
-      // Obtener el modelo con todas las relaciones para la respuesta
-      const modeloCompleto = await this.modeloEventoRepository.findOne({
-        where: { id: savedModelo.id },
-        relations: [
-          'buCatalogo',
-          'buCatalogo.geography',
-          'cfsCatalogo',
-          'serviceOwner',
-          'estatusModelo',
-          'estatusMedicion',
-          'partnership'
-        ]
-      });
-
-      if (!modeloCompleto) {
-        throw new DatabaseException('Error al recuperar el modelo creado');
-      }
+      this.logger.log(`Modelo de Evento creado con ID: ${savedModelo.id}`);
 
       return {
         status: 201,
-        data: this.formatModeloEventoResponse(modeloCompleto),
-        message: "Modelo de Evento creado exitosamente"
+        data: {
+          id: savedModelo.id,
+          datosCFS: {
+            buId: savedModelo.buId,
+            cfsId: savedModelo.cfsId,
+            serviceOwnerId: savedModelo.serviceOwnerId
+          },
+          datosMedicion: {
+            estatusModeloId: savedModelo.estatusModeloId,
+            estatusMedicionId: savedModelo.estatusMedicionId,
+            modelo: savedModelo.modelo,
+            fuente: savedModelo.fuente,
+            metaDisponibilidad: savedModelo.metaDisponibilidad
+          },
+          partnership: {
+            partnershipId: savedModelo.partnershipId,
+            estatusMedicionPartnership: savedModelo.estatusMedicionPartnership,
+            metaPartnershipExpectedSLA: savedModelo.metaPartnershipExpectedSLA,
+            metaPartnershipMinimumSLA: savedModelo.metaPartnershipMinimumSLA,
+            metaPartnershipStretchedSLA: savedModelo.metaPartnershipStretchedSLA,
+            definirFuncionalidadDependencia: savedModelo.definirFuncionalidadDependencia
+          },
+          fechas: {
+            fechaAlta: savedModelo.fechaAlta,
+            fechaActivacion: savedModelo.fechaActivacion,
+            fechaInicioPeriodoGarantia: savedModelo.fechaInicioPeriodoGarantia,
+            fechaInicioOficial: savedModelo.fechaInicioOficial,
+            version: savedModelo.version,
+            fechaInicioVersion: savedModelo.fechaInicioVersion,
+            fechaInactivacion: savedModelo.fechaInactivacion
+          },
+          active: savedModelo.active,
+          createdAt: savedModelo.createdAt,
+          updatedAt: savedModelo.updatedAt
+        },
+        message: 'Modelo de Evento creado exitosamente'
       };
-
     } catch (error) {
-      this.logger.error('Error creating Modelo Evento', error);
-
-      if (error instanceof BuCatalogoNotFoundException ||
-          error instanceof CfsCatalogoNotFoundException ||
-          error instanceof ServiceOwnerNotFoundException ||
-          error instanceof StatusModeloNotFoundException ||
-          error instanceof StatusMedicionNotFoundException ||
-          error instanceof PartnershipNotFoundException ||
-          error instanceof InvalidDateRangeException ||
-          error instanceof DatabaseException) {
-        throw error;
-      }
-
-      if (error instanceof QueryFailedError) {
-        throw new DatabaseException('Error al crear el Modelo de Evento en la base de datos');
-      }
-
-      throw new DatabaseException();
+      this.logger.error(`Error al crear Modelo de Evento: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
     }
   }
 
   async findAll() {
     try {
       const modelosEventos = await this.modeloEventoRepository.find({
+        where: { active: true },
         relations: [
           'buCatalogo',
-          'buCatalogo.geography',
           'cfsCatalogo',
           'serviceOwner',
           'estatusModelo',
           'estatusMedicion',
           'partnership'
         ],
-        order: { createdAt: 'DESC' }
+        order: { id: 'DESC' }
       });
 
       return {
         status: 200,
-        data: modelosEventos.map(modelo => this.formatModeloEventoResponse(modelo)),
-        message: "Modelos de Eventos obtenidos exitosamente"
+        data: modelosEventos.map(modelo => ({
+          id: modelo.id,
+          datosCFS: {
+            buId: modelo.buId,
+            buNombre: modelo.buCatalogo?.name,
+            cfsId: modelo.cfsId,
+            cfsNombre: modelo.cfsCatalogo?.name,
+            serviceOwnerId: modelo.serviceOwnerId,
+            serviceOwnerNombre: modelo.serviceOwner?.name
+          },
+          datosMedicion: {
+            estatusModeloId: modelo.estatusModeloId,
+            estatusModeloNombre: modelo.estatusModelo?.name,
+            estatusMedicionId: modelo.estatusMedicionId,
+            estatusMedicionNombre: modelo.estatusMedicion?.name,
+            modelo: modelo.modelo,
+            fuente: modelo.fuente,
+            metaDisponibilidad: modelo.metaDisponibilidad
+          },
+          partnership: {
+            partnershipId: modelo.partnershipId,
+            partnershipNombre: modelo.partnership?.name,
+            estatusMedicionPartnership: modelo.estatusMedicionPartnership,
+            metaPartnershipExpectedSLA: modelo.metaPartnershipExpectedSLA,
+            metaPartnershipMinimumSLA: modelo.metaPartnershipMinimumSLA,
+            metaPartnershipStretchedSLA: modelo.metaPartnershipStretchedSLA,
+            definirFuncionalidadDependencia: modelo.definirFuncionalidadDependencia
+          },
+          fechas: {
+            fechaAlta: modelo.fechaAlta,
+            fechaActivacion: modelo.fechaActivacion,
+            fechaInicioPeriodoGarantia: modelo.fechaInicioPeriodoGarantia,
+            fechaInicioOficial: modelo.fechaInicioOficial,
+            version: modelo.version,
+            fechaInicioVersion: modelo.fechaInicioVersion,
+            fechaInactivacion: modelo.fechaInactivacion
+          },
+          active: modelo.active,
+          createdAt: modelo.createdAt,
+          updatedAt: modelo.updatedAt
+        })),
+        message: 'Modelos de Eventos obtenidos exitosamente'
       };
     } catch (error) {
-      this.logger.error('Error fetching Modelos Eventos', error);
-      throw new DatabaseException('Error al obtener los Modelos de Eventos');
+      this.logger.error(`Error al obtener Modelos de Eventos: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
     }
   }
 
   async findOne(id: number) {
     try {
       const modeloEvento = await this.modeloEventoRepository.findOne({
-        where: { id },
+        where: { id, active: true },
         relations: [
           'buCatalogo',
-          'buCatalogo.geography',
           'cfsCatalogo',
           'serviceOwner',
           'estatusModelo',
@@ -172,124 +209,93 @@ export class ModeloEventosService {
 
       return {
         status: 200,
-        data: this.formatModeloEventoResponse(modeloEvento),
-        message: "Modelo de Evento obtenido exitosamente"
+        data: {
+          id: modeloEvento.id,
+          datosCFS: {
+            buId: modeloEvento.buId,
+            buNombre: modeloEvento.buCatalogo?.name,
+            cfsId: modeloEvento.cfsId,
+            cfsNombre: modeloEvento.cfsCatalogo?.name,
+            serviceOwnerId: modeloEvento.serviceOwnerId,
+            serviceOwnerNombre: modeloEvento.serviceOwner?.name
+          },
+          datosMedicion: {
+            estatusModeloId: modeloEvento.estatusModeloId,
+            estatusModeloNombre: modeloEvento.estatusModelo?.name,
+            estatusMedicionId: modeloEvento.estatusMedicionId,
+            estatusMedicionNombre: modeloEvento.estatusMedicion?.name,
+            modelo: modeloEvento.modelo,
+            fuente: modeloEvento.fuente,
+            metaDisponibilidad: modeloEvento.metaDisponibilidad
+          },
+          partnership: {
+            partnershipId: modeloEvento.partnershipId,
+            partnershipNombre: modeloEvento.partnership?.name,
+            estatusMedicionPartnership: modeloEvento.estatusMedicionPartnership,
+            metaPartnershipExpectedSLA: modeloEvento.metaPartnershipExpectedSLA,
+            metaPartnershipMinimumSLA: modeloEvento.metaPartnershipMinimumSLA,
+            metaPartnershipStretchedSLA: modeloEvento.metaPartnershipStretchedSLA,
+            definirFuncionalidadDependencia: modeloEvento.definirFuncionalidadDependencia
+          },
+          fechas: {
+            fechaAlta: modeloEvento.fechaAlta,
+            fechaActivacion: modeloEvento.fechaActivacion,
+            fechaInicioPeriodoGarantia: modeloEvento.fechaInicioPeriodoGarantia,
+            fechaInicioOficial: modeloEvento.fechaInicioOficial,
+            version: modeloEvento.version,
+            fechaInicioVersion: modeloEvento.fechaInicioVersion,
+            fechaInactivacion: modeloEvento.fechaInactivacion
+          },
+          active: modeloEvento.active,
+          createdAt: modeloEvento.createdAt,
+          updatedAt: modeloEvento.updatedAt
+        },
+        message: 'Modelo de Evento obtenido exitosamente'
       };
     } catch (error) {
-      this.logger.error(`Error fetching Modelo Evento with id ${id}`, error);
-
-      if (error instanceof ModeloEventoNotFoundException) {
-        throw error;
-      }
-
-      throw new DatabaseException();
-    }
-  }
-
-  async findByBuId(buId: number) {
-    try {
-      // Verificar si la Business Unit existe
-      const buCatalogo = await this.buCatalogoRepository.findOne({
-        where: { id: buId, active: true }
-      });
-
-      if (!buCatalogo) {
-        throw new BuCatalogoNotFoundException(buId);
-      }
-
-      const modelosEventos = await this.modeloEventoRepository.find({
-        where: { buId, active: true },
-        relations: [
-          'buCatalogo',
-          'buCatalogo.geography',
-          'cfsCatalogo',
-          'serviceOwner',
-          'estatusModelo',
-          'estatusMedicion',
-          'partnership'
-        ],
-        order: { createdAt: 'DESC' }
-      });
-
-      return {
-        status: 200,
-        data: modelosEventos.map(modelo => this.formatModeloEventoResponse(modelo)),
-        message: `Modelos de Eventos de la Business Unit ${buCatalogo.name} obtenidos exitosamente`
-      };
-    } catch (error) {
-      this.logger.error(`Error fetching Modelos Eventos by BU ID ${buId}`, error);
-
-      if (error instanceof BuCatalogoNotFoundException) {
-        throw error;
-      }
-
-      throw new DatabaseException('Error al obtener los Modelos de Eventos por Business Unit');
-    }
-  }
-
-  async findByCfsId(cfsId: number) {
-    try {
-      // Verificar si el CFS existe
-      const cfsCatalogo = await this.cfsCatalogoRepository.findOne({
-        where: { id: cfsId, active: true }
-      });
-
-      if (!cfsCatalogo) {
-        throw new CfsCatalogoNotFoundException(cfsId);
-      }
-
-      const modelosEventos = await this.modeloEventoRepository.find({
-        where: { cfsId, active: true },
-        relations: [
-          'buCatalogo',
-          'buCatalogo.geography',
-          'cfsCatalogo',
-          'serviceOwner',
-          'estatusModelo',
-          'estatusMedicion',
-          'partnership'
-        ],
-        order: { createdAt: 'DESC' }
-      });
-
-      return {
-        status: 200,
-        data: modelosEventos.map(modelo => this.formatModeloEventoResponse(modelo)),
-        message: `Modelos de Eventos del CFS ${cfsCatalogo.name} obtenidos exitosamente`
-      };
-    } catch (error) {
-      this.logger.error(`Error fetching Modelos Eventos by CFS ID ${cfsId}`, error);
-
-      if (error instanceof CfsCatalogoNotFoundException) {
-        throw error;
-      }
-
-      throw new DatabaseException('Error al obtener los Modelos de Eventos por CFS');
+      this.logger.error(`Error al obtener Modelo de Evento con ID ${id}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
     }
   }
 
   async update(id: number, updateModeloEventoDto: UpdateModeloEventoDto) {
     try {
-      const modeloEvento = await this.modeloEventoRepository.findOne({
-        where: { id }
+      const existingModeloEvento = await this.modeloEventoRepository.findOne({
+        where: { id, active: true }
       });
 
-      if (!modeloEvento) {
+      if (!existingModeloEvento) {
         throw new ModeloEventoNotFoundException(id);
       }
 
-      // Validar entidades relacionadas si se están actualizando
-      await this.validateRelatedEntitiesForUpdate(updateModeloEventoDto);
-
-      // Validar fechas si se están actualizando
-      if (this.hasDateFields(updateModeloEventoDto)) {
-        const mergedData = { ...modeloEvento, ...updateModeloEventoDto };
-        this.validateDateRanges(mergedData);
+      // Validar relaciones solo si se están actualizando
+      if (updateModeloEventoDto.buId) {
+        await this.validateBuCatalogo(updateModeloEventoDto.buId);
+      }
+      if (updateModeloEventoDto.cfsId) {
+        await this.validateCfsCatalogo(updateModeloEventoDto.cfsId);
+      }
+      if (updateModeloEventoDto.serviceOwnerId) {
+        await this.validateServiceOwner(updateModeloEventoDto.serviceOwnerId);
+      }
+      if (updateModeloEventoDto.estatusModeloId) {
+        await this.validateStatusModelo(updateModeloEventoDto.estatusModeloId);
+      }
+      if (updateModeloEventoDto.estatusMedicionId) {
+        await this.validateStatusMedicion(updateModeloEventoDto.estatusMedicionId);
+      }
+      if (updateModeloEventoDto.partnershipId) {
+        await this.validatePartnership(updateModeloEventoDto.partnershipId);
       }
 
-      // Preparar datos de actualización
-      const updateData: Partial<ModeloEvento> = {};
+      // Validar secuencia de fechas con datos combinados
+      const updatedData = { ...existingModeloEvento, ...updateModeloEventoDto };
+      this.validateDateSequence(updatedData as DateValidationData);
 
+      // Convertir fechas a Date si están presentes
+      const updateData: Partial<ModeloEvento> = {};
+      
+      // Copiar campos específicos que no son fechas
       if (updateModeloEventoDto.buId !== undefined) updateData.buId = updateModeloEventoDto.buId;
       if (updateModeloEventoDto.cfsId !== undefined) updateData.cfsId = updateModeloEventoDto.cfsId;
       if (updateModeloEventoDto.serviceOwnerId !== undefined) updateData.serviceOwnerId = updateModeloEventoDto.serviceOwnerId;
@@ -300,30 +306,39 @@ export class ModeloEventosService {
       if (updateModeloEventoDto.metaDisponibilidad !== undefined) updateData.metaDisponibilidad = updateModeloEventoDto.metaDisponibilidad;
       if (updateModeloEventoDto.partnershipId !== undefined) updateData.partnershipId = updateModeloEventoDto.partnershipId;
       if (updateModeloEventoDto.estatusMedicionPartnership !== undefined) updateData.estatusMedicionPartnership = updateModeloEventoDto.estatusMedicionPartnership;
-      if (updateModeloEventoDto.version !== undefined) updateData.version = updateModeloEventoDto.version;
       if (updateModeloEventoDto.metaPartnershipExpectedSLA !== undefined) updateData.metaPartnershipExpectedSLA = updateModeloEventoDto.metaPartnershipExpectedSLA;
       if (updateModeloEventoDto.metaPartnershipMinimumSLA !== undefined) updateData.metaPartnershipMinimumSLA = updateModeloEventoDto.metaPartnershipMinimumSLA;
       if (updateModeloEventoDto.metaPartnershipStretchedSLA !== undefined) updateData.metaPartnershipStretchedSLA = updateModeloEventoDto.metaPartnershipStretchedSLA;
       if (updateModeloEventoDto.definirFuncionalidadDependencia !== undefined) updateData.definirFuncionalidadDependencia = updateModeloEventoDto.definirFuncionalidadDependencia;
+      if (updateModeloEventoDto.version !== undefined) updateData.version = updateModeloEventoDto.version;
       if (updateModeloEventoDto.active !== undefined) updateData.active = updateModeloEventoDto.active;
 
-      // Convertir fechas si están presentes
-      if (updateModeloEventoDto.fechaAlta) updateData.fechaAlta = new Date(updateModeloEventoDto.fechaAlta);
-      if (updateModeloEventoDto.fechaActivacion) updateData.fechaActivacion = new Date(updateModeloEventoDto.fechaActivacion);
-      if (updateModeloEventoDto.fechaInicioPeriodoGarantia) updateData.fechaInicioPeriodoGarantia = new Date(updateModeloEventoDto.fechaInicioPeriodoGarantia);
-      if (updateModeloEventoDto.fechaInicioOficial) updateData.fechaInicioOficial = new Date(updateModeloEventoDto.fechaInicioOficial);
-      if (updateModeloEventoDto.fechaInicioVersion) updateData.fechaInicioVersion = new Date(updateModeloEventoDto.fechaInicioVersion);
-      if (updateModeloEventoDto.fechaInactivacion) updateData.fechaInactivacion = new Date(updateModeloEventoDto.fechaInactivacion);
+      // Convertir fechas específicamente
+      if (updateModeloEventoDto.fechaAlta) {
+        updateData.fechaAlta = new Date(updateModeloEventoDto.fechaAlta);
+      }
+      if (updateModeloEventoDto.fechaActivacion) {
+        updateData.fechaActivacion = new Date(updateModeloEventoDto.fechaActivacion);
+      }
+      if (updateModeloEventoDto.fechaInicioPeriodoGarantia) {
+        updateData.fechaInicioPeriodoGarantia = new Date(updateModeloEventoDto.fechaInicioPeriodoGarantia);
+      }
+      if (updateModeloEventoDto.fechaInicioOficial) {
+        updateData.fechaInicioOficial = new Date(updateModeloEventoDto.fechaInicioOficial);
+      }
+      if (updateModeloEventoDto.fechaInicioVersion) {
+        updateData.fechaInicioVersion = new Date(updateModeloEventoDto.fechaInicioVersion);
+      }
+      if (updateModeloEventoDto.fechaInactivacion) {
+        updateData.fechaInactivacion = new Date(updateModeloEventoDto.fechaInactivacion);
+      }
 
-      // Actualizar
       await this.modeloEventoRepository.update(id, updateData);
 
-      // Obtener el registro actualizado
-      const updatedModelo = await this.modeloEventoRepository.findOne({
+      const updatedModeloEvento = await this.modeloEventoRepository.findOne({
         where: { id },
         relations: [
           'buCatalogo',
-          'buCatalogo.geography',
           'cfsCatalogo',
           'serviceOwner',
           'estatusModelo',
@@ -332,301 +347,279 @@ export class ModeloEventosService {
         ]
       });
 
-      if (!updatedModelo) {
+      if (!updatedModeloEvento) {
         throw new ModeloEventoNotFoundException(id);
       }
 
+      this.logger.log(`Modelo de Evento con ID ${id} actualizado exitosamente`);
+
       return {
         status: 200,
-        data: this.formatModeloEventoResponse(updatedModelo),
-        message: "Modelo de Evento actualizado exitosamente"
+        data: {
+          id: updatedModeloEvento.id,
+          datosCFS: {
+            buId: updatedModeloEvento.buId,
+            buNombre: updatedModeloEvento.buCatalogo?.name,
+            cfsId: updatedModeloEvento.cfsId,
+            cfsNombre: updatedModeloEvento.cfsCatalogo?.name,
+            serviceOwnerId: updatedModeloEvento.serviceOwnerId,
+            serviceOwnerNombre: updatedModeloEvento.serviceOwner?.name
+          },
+          datosMedicion: {
+            estatusModeloId: updatedModeloEvento.estatusModeloId,
+            estatusModeloNombre: updatedModeloEvento.estatusModelo?.name,
+            estatusMedicionId: updatedModeloEvento.estatusMedicionId,
+            estatusMedicionNombre: updatedModeloEvento.estatusMedicion?.name,
+            modelo: updatedModeloEvento.modelo,
+            fuente: updatedModeloEvento.fuente,
+            metaDisponibilidad: updatedModeloEvento.metaDisponibilidad
+          },
+          partnership: {
+            partnershipId: updatedModeloEvento.partnershipId,
+            partnershipNombre: updatedModeloEvento.partnership?.name,
+            estatusMedicionPartnership: updatedModeloEvento.estatusMedicionPartnership,
+            metaPartnershipExpectedSLA: updatedModeloEvento.metaPartnershipExpectedSLA,
+            metaPartnershipMinimumSLA: updatedModeloEvento.metaPartnershipMinimumSLA,
+            metaPartnershipStretchedSLA: updatedModeloEvento.metaPartnershipStretchedSLA,
+            definirFuncionalidadDependencia: updatedModeloEvento.definirFuncionalidadDependencia
+          },
+          fechas: {
+            fechaAlta: updatedModeloEvento.fechaAlta,
+            fechaActivacion: updatedModeloEvento.fechaActivacion,
+            fechaInicioPeriodoGarantia: updatedModeloEvento.fechaInicioPeriodoGarantia,
+            fechaInicioOficial: updatedModeloEvento.fechaInicioOficial,
+            version: updatedModeloEvento.version,
+            fechaInicioVersion: updatedModeloEvento.fechaInicioVersion,
+            fechaInactivacion: updatedModeloEvento.fechaInactivacion
+          },
+          active: updatedModeloEvento.active,
+          createdAt: updatedModeloEvento.createdAt,
+          updatedAt: updatedModeloEvento.updatedAt
+        },
+        message: 'Modelo de Evento actualizado exitosamente'
       };
-
     } catch (error) {
-      this.logger.error(`Error updating Modelo Evento with id ${id}`, error);
-
-      if (error instanceof ModeloEventoNotFoundException ||
-          error instanceof BuCatalogoNotFoundException ||
-          error instanceof CfsCatalogoNotFoundException ||
-          error instanceof ServiceOwnerNotFoundException ||
-          error instanceof StatusModeloNotFoundException ||
-          error instanceof StatusMedicionNotFoundException ||
-          error instanceof PartnershipNotFoundException ||
-          error instanceof InvalidDateRangeException) {
-        throw error;
-      }
-
-      if (error instanceof QueryFailedError) {
-        throw new DatabaseException('Error al actualizar el Modelo de Evento en la base de datos');
-      }
-
-      throw new DatabaseException();
+      this.logger.error(`Error al actualizar Modelo de Evento con ID ${id}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
     }
   }
 
   async remove(id: number) {
     try {
       const modeloEvento = await this.modeloEventoRepository.findOne({
-        where: { id }
+        where: { id, active: true }
       });
 
       if (!modeloEvento) {
         throw new ModeloEventoNotFoundException(id);
       }
 
-      await this.modeloEventoRepository.remove(modeloEvento);
+      // Soft delete - marcar como inactivo
+      await this.modeloEventoRepository.update(id, { active: false });
+
+      this.logger.log(`Modelo de Evento con ID ${id} eliminado exitosamente (soft delete)`);
 
       return {
         status: 200,
-        message: "Modelo de Evento eliminado exitosamente"
+        message: 'Modelo de Evento eliminado exitosamente'
       };
-
     } catch (error) {
-      this.logger.error(`Error removing Modelo Evento with id ${id}`, error);
-
-      if (error instanceof ModeloEventoNotFoundException) {
-        throw error;
-      }
-
-      if (error instanceof QueryFailedError) {
-        throw new DatabaseException('Error al eliminar el Modelo de Evento de la base de datos');
-      }
-
-      throw new DatabaseException();
+      this.logger.error(`Error al eliminar Modelo de Evento con ID ${id}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
     }
   }
 
-  // Métodos privados de validación y formato
+  // Métodos de búsqueda adicionales
+  async findByBuId(buId: number) {
+    try {
+      const modelosEventos = await this.modeloEventoRepository.find({
+        where: { buId, active: true },
+        relations: [
+          'buCatalogo',
+          'cfsCatalogo',
+          'serviceOwner',
+          'estatusModelo',
+          'estatusMedicion',
+          'partnership'
+        ],
+        order: { id: 'DESC' }
+      });
 
-  private async validateRelatedEntities(dto: CreateModeloEventoDto) {
-    // Validar Business Unit
-    const buCatalogo = await this.buCatalogoRepository.findOne({
-      where: { id: dto.buId, active: true }
+      return {
+        status: 200,
+        data: modelosEventos,
+        message: `Modelos de Eventos para BU ID ${buId} obtenidos exitosamente`
+      };
+    } catch (error) {
+      this.logger.error(`Error al obtener Modelos de Eventos por BU ID ${buId}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
+    }
+  }
+
+  async findByCfsId(cfsId: number) {
+    try {
+      const modelosEventos = await this.modeloEventoRepository.find({
+        where: { cfsId, active: true },
+        relations: [
+          'buCatalogo',
+          'cfsCatalogo',
+          'serviceOwner',
+          'estatusModelo',
+          'estatusMedicion',
+          'partnership'
+        ],
+        order: { id: 'DESC' }
+      });
+
+      return {
+        status: 200,
+        data: modelosEventos,
+        message: `Modelos de Eventos para CFS ID ${cfsId} obtenidos exitosamente`
+      };
+    } catch (error) {
+      this.logger.error(`Error al obtener Modelos de Eventos por CFS ID ${cfsId}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
+    }
+  }
+
+  async findByVersion(version: number) {
+    try {
+      const modelosEventos = await this.modeloEventoRepository.find({
+        where: { version, active: true },
+        relations: [
+          'buCatalogo',
+          'cfsCatalogo',
+          'serviceOwner',
+          'estatusModelo',
+          'estatusMedicion',
+          'partnership'
+        ],
+        order: { id: 'DESC' }
+      });
+
+      return {
+        status: 200,
+        data: modelosEventos,
+        message: `Modelos de Eventos versión ${version} obtenidos exitosamente`
+      };
+    } catch (error) {
+      this.logger.error(`Error al obtener Modelos de Eventos por versión ${version}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
+    }
+  }
+
+  async findByStatusModelo(estatusModeloId: number) {
+    try {
+      const modelosEventos = await this.modeloEventoRepository.find({
+        where: { estatusModeloId, active: true },
+        relations: [
+          'buCatalogo',
+          'cfsCatalogo',
+          'serviceOwner',
+          'estatusModelo',
+          'estatusMedicion',
+          'partnership'
+        ],
+        order: { id: 'DESC' }
+      });
+
+      return {
+        status: 200,
+        data: modelosEventos,
+        message: `Modelos de Eventos con status modelo ID ${estatusModeloId} obtenidos exitosamente`
+      };
+    } catch (error) {
+      this.logger.error(`Error al obtener Modelos de Eventos por status modelo ID ${estatusModeloId}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      throw error;
+    }
+  }
+
+  // Métodos de validación privados
+  private async validateBuCatalogo(buId: number): Promise<void> {
+    const bu = await this.buCatalogoRepository.findOne({
+      where: { id: buId, active: true }
     });
-    if (!buCatalogo) {
-      throw new BuCatalogoNotFoundException(dto.buId);
+    if (!bu) {
+      throw new BuCatalogoNotFoundException(buId);
     }
+  }
 
-    // Validar CFS
-    const cfsCatalogo = await this.cfsCatalogoRepository.findOne({
-      where: { id: dto.cfsId, active: true }
+  private async validateCfsCatalogo(cfsId: number): Promise<void> {
+    const cfs = await this.cfsCatalogoRepository.findOne({
+      where: { id: cfsId, active: true }
     });
-    if (!cfsCatalogo) {
-      throw new CfsCatalogoNotFoundException(dto.cfsId);
+    if (!cfs) {
+      throw new CfsCatalogoNotFoundException(cfsId);
     }
+  }
 
-    // Validar que el CFS pertenezca al BU
-    if (cfsCatalogo.buId !== dto.buId) {
-      throw new InvalidDateRangeException('El CFS seleccionado no pertenece al Business Unit especificado');
-    }
-
-    // Validar Service Owner
+  private async validateServiceOwner(serviceOwnerId: number): Promise<void> {
     const serviceOwner = await this.serviceOwnerRepository.findOne({
-      where: { id: dto.serviceOwnerId, active: true }
+      where: { id: serviceOwnerId, active: true }
     });
     if (!serviceOwner) {
-      throw new ServiceOwnerNotFoundException(dto.serviceOwnerId);
+      throw new ServiceOwnerNotFoundException(serviceOwnerId);
     }
+  }
 
-    // Validar Status Modelo
-    const statusModelo = await this.statusModeloRepository.findOne({
-      where: { id: dto.estatusModeloId, active: true }
+  private async validateStatusModelo(statusModeloId: number): Promise<void> {
+    const statusModelo = await this.statusModeloCatalogoRepository.findOne({
+      where: { id: statusModeloId, active: true }
     });
     if (!statusModelo) {
-      throw new StatusModeloNotFoundException(dto.estatusModeloId);
+      throw new StatusModeloNotFoundException(statusModeloId);
     }
+  }
 
-    // Validar Status Medicion
+  private async validateStatusMedicion(statusMedicionId: number): Promise<void> {
     const statusMedicion = await this.statusMedicionRepository.findOne({
-      where: { id: dto.estatusMedicionId, active: true }
+      where: { id: statusMedicionId, active: true }
     });
     if (!statusMedicion) {
-      throw new StatusMedicionNotFoundException(dto.estatusMedicionId);
+      throw new StatusMedicionNotFoundException(statusMedicionId);
     }
+  }
 
-    // Validar Partnership
+  private async validatePartnership(partnershipId: number): Promise<void> {
     const partnership = await this.partnershipRepository.findOne({
-      where: { id: dto.partnershipId, active: true }
+      where: { id: partnershipId, active: true }
     });
     if (!partnership) {
-      throw new PartnershipNotFoundException(dto.partnershipId);
+      throw new PartnershipNotFoundException(partnershipId);
     }
   }
 
-  private async validateRelatedEntitiesForUpdate(dto: UpdateModeloEventoDto) {
-    if (dto.buId) {
-      const buCatalogo = await this.buCatalogoRepository.findOne({
-        where: { id: dto.buId, active: true }
-      });
-      if (!buCatalogo) {
-        throw new BuCatalogoNotFoundException(dto.buId);
-      }
+  private validateDateSequence(data: DateValidationData): void {
+    const fechaAlta = new Date(data.fechaAlta);
+    const fechaActivacion = new Date(data.fechaActivacion);
+    const fechaInicioPeriodoGarantia = new Date(data.fechaInicioPeriodoGarantia);
+    const fechaInicioOficial = new Date(data.fechaInicioOficial);
+    const fechaInicioVersion = new Date(data.fechaInicioVersion);
+    const fechaInactivacion = data.fechaInactivacion ? new Date(data.fechaInactivacion) : null;
+
+    // Validar que fechaAlta sea <= fechaActivacion
+    if (fechaAlta > fechaActivacion) {
+      throw new InvalidDateRangeException('La fecha de alta no puede ser posterior a la fecha de activación');
     }
 
-    if (dto.cfsId) {
-      const cfsCatalogo = await this.cfsCatalogoRepository.findOne({
-        where: { id: dto.cfsId, active: true }
-      });
-      if (!cfsCatalogo) {
-        throw new CfsCatalogoNotFoundException(dto.cfsId);
-      }
-
-      // Si también se actualiza buId, validar que coincidan
-      if (dto.buId && cfsCatalogo.buId !== dto.buId) {
-        throw new InvalidDateRangeException('El CFS seleccionado no pertenece al Business Unit especificado');
-      }
+    // Validar que fechaActivacion sea <= fechaInicioPeriodoGarantia
+    if (fechaActivacion > fechaInicioPeriodoGarantia) {
+      throw new InvalidDateRangeException('La fecha de activación no puede ser posterior a la fecha de inicio del período de garantía');
     }
 
-    if (dto.serviceOwnerId) {
-      const serviceOwner = await this.serviceOwnerRepository.findOne({
-        where: { id: dto.serviceOwnerId, active: true }
-      });
-      if (!serviceOwner) {
-        throw new ServiceOwnerNotFoundException(dto.serviceOwnerId);
-      }
+    // Validar que fechaInicioPeriodoGarantia sea <= fechaInicioOficial
+    if (fechaInicioPeriodoGarantia > fechaInicioOficial) {
+      throw new InvalidDateRangeException('La fecha de inicio del período de garantía no puede ser posterior a la fecha de inicio oficial');
     }
 
-    if (dto.estatusModeloId) {
-      const statusModelo = await this.statusModeloRepository.findOne({
-        where: { id: dto.estatusModeloId, active: true }
-      });
-      if (!statusModelo) {
-        throw new StatusModeloNotFoundException(dto.estatusModeloId);
-      }
+    // Validar que fechaInicioVersion sea >= fechaActivacion
+    if (fechaInicioVersion < fechaActivacion) {
+      throw new InvalidDateRangeException('La fecha de inicio de versión no puede ser anterior a la fecha de activación');
     }
 
-    if (dto.estatusMedicionId) {
-      const statusMedicion = await this.statusMedicionRepository.findOne({
-        where: { id: dto.estatusMedicionId, active: true }
-      });
-      if (!statusMedicion) {
-        throw new StatusMedicionNotFoundException(dto.estatusMedicionId);
-      }
+    // Si existe fechaInactivacion, debe ser posterior a fechaInicioOficial
+    if (fechaInactivacion && fechaInactivacion <= fechaInicioOficial) {
+      throw new InvalidDateRangeException('La fecha de inactivación debe ser posterior a la fecha de inicio oficial');
     }
-
-    if (dto.partnershipId) {
-      const partnership = await this.partnershipRepository.findOne({
-        where: { id: dto.partnershipId, active: true }
-      });
-      if (!partnership) {
-        throw new PartnershipNotFoundException(dto.partnershipId);
-      }
-    }
-  }
-
-  private validateDateRanges(dto: any) {
-    const fechaAlta = new Date(dto.fechaAlta);
-    const fechaActivacion = new Date(dto.fechaActivacion);
-    const fechaInicioPeriodoGarantia = new Date(dto.fechaInicioPeriodoGarantia);
-    const fechaInicioOficial = new Date(dto.fechaInicioOficial);
-    const fechaInicioVersion = new Date(dto.fechaInicioVersion);
-
-    // Validar que fechaActivacion sea mayor o igual a fechaAlta
-    if (fechaActivacion < fechaAlta) {
-      throw new InvalidDateRangeException('La fecha de activación debe ser mayor o igual a la fecha de alta');
-    }
-
-    // Validar que fechaInicioPeriodoGarantia sea mayor o igual a fechaActivacion
-    if (fechaInicioPeriodoGarantia < fechaActivacion) {
-      throw new InvalidDateRangeException('La fecha de inicio del período de garantía debe ser mayor o igual a la fecha de activación');
-    }
-
-    // Validar que fechaInicioOficial sea mayor o igual a fechaInicioPeriodoGarantia
-    if (fechaInicioOficial < fechaInicioPeriodoGarantia) {
-      throw new InvalidDateRangeException('La fecha de inicio oficial debe ser mayor o igual a la fecha de inicio del período de garantía');
-    }
-
-    // Validar que fechaInicioVersion sea mayor o igual a fechaAlta
-    if (fechaInicioVersion < fechaAlta) {
-      throw new InvalidDateRangeException('La fecha de inicio de versión debe ser mayor o igual a la fecha de alta');
-    }
-
-    // Si hay fecha de inactivación, debe ser mayor a todas las demás
-    if (dto.fechaInactivacion) {
-      const fechaInactivacion = new Date(dto.fechaInactivacion);
-      if (fechaInactivacion <= fechaInicioOficial) {
-        throw new InvalidDateRangeException('La fecha de inactivación debe ser mayor a la fecha de inicio oficial');
-      }
-    }
-  }
-
-  private hasDateFields(dto: UpdateModeloEventoDto): boolean {
-    return !!(dto.fechaAlta || dto.fechaActivacion || dto.fechaInicioPeriodoGarantia ||
-              dto.fechaInicioOficial || dto.fechaInicioVersion || dto.fechaInactivacion);
-  }
-
-  private formatModeloEventoResponse(modelo: ModeloEvento) {
-    return {
-      id: modelo.id,
-      datosCFS: {
-        buId: modelo.buId,
-        bu: {
-          id: modelo.buCatalogo.id,
-          name: modelo.buCatalogo.name,
-          geography: {
-            id: modelo.buCatalogo.geography.id,
-            name: modelo.buCatalogo.geography.name,
-            code: modelo.buCatalogo.geography.code
-          }
-        },
-        cfsId: modelo.cfsId,
-        cfs: {
-          id: modelo.cfsCatalogo.id,
-          name: modelo.cfsCatalogo.name,
-          campoN1: modelo.cfsCatalogo.campoN1,
-          campoN2: modelo.cfsCatalogo.campoN2
-        },
-        serviceOwnerId: modelo.serviceOwnerId,
-        serviceOwner: {
-          id: modelo.serviceOwner.id,
-          name: modelo.serviceOwner.name,
-          email: modelo.serviceOwner.email,
-          area: modelo.serviceOwner.area,
-          cargo: modelo.serviceOwner.cargo
-        }
-      },
-      datosMedicion: {
-        estatusModeloId: modelo.estatusModeloId,
-        estatusModelo: {
-          id: modelo.estatusModelo.id,
-          name: modelo.estatusModelo.name
-        },
-        estatusMedicionId: modelo.estatusMedicionId,
-        estatusMedicion: {
-          id: modelo.estatusMedicion.id,
-          name: modelo.estatusMedicion.name,
-          description: modelo.estatusMedicion.description
-        },
-        modelo: modelo.modelo,
-        fuente: modelo.fuente,
-        metaDisponibilidad: modelo.metaDisponibilidad
-      },
-      partnership: {
-        partnershipId: modelo.partnershipId,
-        partnership: {
-          id: modelo.partnership.id,
-          name: modelo.partnership.name,
-          description: modelo.partnership.description,
-          tipo: modelo.partnership.tipo
-        },
-        estatusMedicionPartnership: modelo.estatusMedicionPartnership,
-        metaPartnershipExpectedSLA: modelo.metaPartnershipExpectedSLA,
-        metaPartnershipMinimumSLA: modelo.metaPartnershipMinimumSLA,
-        metaPartnershipStretchedSLA: modelo.metaPartnershipStretchedSLA,
-        definirFuncionalidadDependencia: modelo.definirFuncionalidadDependencia
-      },
-      fechas: {
-        fechaAlta: modelo.fechaAlta,
-        fechaActivacion: modelo.fechaActivacion,
-        fechaInicioPeriodoGarantia: modelo.fechaInicioPeriodoGarantia,
-        fechaInicioOficial: modelo.fechaInicioOficial,
-        version: modelo.version,
-        fechaInicioVersion: modelo.fechaInicioVersion,
-        fechaInactivacion: modelo.fechaInactivacion
-      },
-      active: modelo.active,
-      createdAt: modelo.createdAt,
-      updatedAt: modelo.updatedAt
-    };
   }
 }

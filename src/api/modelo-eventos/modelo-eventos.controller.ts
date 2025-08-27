@@ -7,10 +7,9 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  ValidationPipe,
-  UsePipes,
   HttpCode,
-  HttpStatus
+  HttpStatus,
+  ParseFloatPipe
 } from '@nestjs/common';
 import { ModeloEventosService } from './modelo-eventos.service';
 import { CreateModeloEventoDto } from './dto/create-modelo-evento.dto';
@@ -22,7 +21,6 @@ export class ModeloEventosController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() createModeloEventoDto: CreateModeloEventoDto) {
     return this.modeloEventosService.create(createModeloEventoDto);
   }
@@ -32,23 +30,32 @@ export class ModeloEventosController {
     return this.modeloEventosService.findAll();
   }
 
+  @Get('by-bu/:buId')
+  findByBuId(@Param('buId', ParseIntPipe) buId: number) {
+    return this.modeloEventosService.findByBuId(buId);
+  }
+
+  @Get('by-cfs/:cfsId')
+  findByCfsId(@Param('cfsId', ParseIntPipe) cfsId: number) {
+    return this.modeloEventosService.findByCfsId(cfsId);
+  }
+
+  @Get('by-version/:version')
+  findByVersion(@Param('version', ParseFloatPipe) version: number) {
+    return this.modeloEventosService.findByVersion(version);
+  }
+
+  @Get('by-status-modelo/:estatusModeloId')
+  findByStatusModelo(@Param('estatusModeloId', ParseIntPipe) estatusModeloId: number) {
+    return this.modeloEventosService.findByStatusModelo(estatusModeloId);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.modeloEventosService.findOne(id);
   }
 
-  @Get('bu/:buId')
-  findByBuId(@Param('buId', ParseIntPipe) buId: number) {
-    return this.modeloEventosService.findByBuId(buId);
-  }
-
-  @Get('cfs/:cfsId')
-  findByCfsId(@Param('cfsId', ParseIntPipe) cfsId: number) {
-    return this.modeloEventosService.findByCfsId(cfsId);
-  }
-
   @Patch(':id')
-  @UsePipes(new ValidationPipe({ transform: true }))
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateModeloEventoDto: UpdateModeloEventoDto
