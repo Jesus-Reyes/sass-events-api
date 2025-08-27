@@ -53,13 +53,15 @@ export class ModeloEventosService {
 
   async create(createModeloEventoDto: CreateModeloEventoDto) {
     try {
-      // Validar que existan las relaciones
-      await this.validateBuCatalogo(createModeloEventoDto.buId);
-      await this.validateCfsCatalogo(createModeloEventoDto.cfsId);
-      await this.validateServiceOwner(createModeloEventoDto.serviceOwnerId);
-      await this.validateStatusModelo(createModeloEventoDto.estatusModeloId);
-      await this.validateStatusMedicion(createModeloEventoDto.estatusMedicionId);
-      await this.validatePartnership(createModeloEventoDto.partnershipId);
+      // Validar que existan las relaciones en paralelo para mejor performance
+      await Promise.all([
+        this.validateBuCatalogo(createModeloEventoDto.buId),
+        this.validateCfsCatalogo(createModeloEventoDto.cfsId),
+        this.validateServiceOwner(createModeloEventoDto.serviceOwnerId),
+        this.validateStatusModelo(createModeloEventoDto.estatusModeloId),
+        this.validateStatusMedicion(createModeloEventoDto.estatusMedicionId),
+        this.validatePartnership(createModeloEventoDto.partnershipId)
+      ]);
       
       // Validar secuencia de fechas
       this.validateDateSequence(createModeloEventoDto);
@@ -268,70 +270,45 @@ export class ModeloEventosService {
         throw new ModeloEventoNotFoundException(id);
       }
 
-      // Validar relaciones solo si se están actualizando
+      // Solo validar relaciones que se están actualizando (las más críticas)
+      const relationValidations: Promise<void>[] = [];
       if (updateModeloEventoDto.buId) {
-        await this.validateBuCatalogo(updateModeloEventoDto.buId);
+        relationValidations.push(this.validateBuCatalogo(updateModeloEventoDto.buId));
       }
       if (updateModeloEventoDto.cfsId) {
-        await this.validateCfsCatalogo(updateModeloEventoDto.cfsId);
+        relationValidations.push(this.validateCfsCatalogo(updateModeloEventoDto.cfsId));
       }
       if (updateModeloEventoDto.serviceOwnerId) {
-        await this.validateServiceOwner(updateModeloEventoDto.serviceOwnerId);
+        relationValidations.push(this.validateServiceOwner(updateModeloEventoDto.serviceOwnerId));
       }
       if (updateModeloEventoDto.estatusModeloId) {
-        await this.validateStatusModelo(updateModeloEventoDto.estatusModeloId);
+        relationValidations.push(this.validateStatusModelo(updateModeloEventoDto.estatusModeloId));
       }
       if (updateModeloEventoDto.estatusMedicionId) {
-        await this.validateStatusMedicion(updateModeloEventoDto.estatusMedicionId);
+        relationValidations.push(this.validateStatusMedicion(updateModeloEventoDto.estatusMedicionId));
       }
       if (updateModeloEventoDto.partnershipId) {
-        await this.validatePartnership(updateModeloEventoDto.partnershipId);
+        relationValidations.push(this.validatePartnership(updateModeloEventoDto.partnershipId));
       }
 
-      // Validar secuencia de fechas con datos combinados
-      const updatedData = { ...existingModeloEvento, ...updateModeloEventoDto };
-      this.validateDateSequence(updatedData as DateValidationData);
+      // Ejecutar validaciones en paralelo para mejor performance
+      await Promise.all(relationValidations);
 
-      // Convertir fechas a Date si están presentes
-      const updateData: Partial<ModeloEvento> = {};
-      
-      // Copiar campos específicos que no son fechas
-      if (updateModeloEventoDto.buId !== undefined) updateData.buId = updateModeloEventoDto.buId;
-      if (updateModeloEventoDto.cfsId !== undefined) updateData.cfsId = updateModeloEventoDto.cfsId;
-      if (updateModeloEventoDto.serviceOwnerId !== undefined) updateData.serviceOwnerId = updateModeloEventoDto.serviceOwnerId;
-      if (updateModeloEventoDto.estatusModeloId !== undefined) updateData.estatusModeloId = updateModeloEventoDto.estatusModeloId;
-      if (updateModeloEventoDto.estatusMedicionId !== undefined) updateData.estatusMedicionId = updateModeloEventoDto.estatusMedicionId;
-      if (updateModeloEventoDto.modelo !== undefined) updateData.modelo = updateModeloEventoDto.modelo;
-      if (updateModeloEventoDto.fuente !== undefined) updateData.fuente = updateModeloEventoDto.fuente;
-      if (updateModeloEventoDto.metaDisponibilidad !== undefined) updateData.metaDisponibilidad = updateModeloEventoDto.metaDisponibilidad;
-      if (updateModeloEventoDto.partnershipId !== undefined) updateData.partnershipId = updateModeloEventoDto.partnershipId;
-      if (updateModeloEventoDto.estatusMedicionPartnership !== undefined) updateData.estatusMedicionPartnership = updateModeloEventoDto.estatusMedicionPartnership;
-      if (updateModeloEventoDto.metaPartnershipExpectedSLA !== undefined) updateData.metaPartnershipExpectedSLA = updateModeloEventoDto.metaPartnershipExpectedSLA;
-      if (updateModeloEventoDto.metaPartnershipMinimumSLA !== undefined) updateData.metaPartnershipMinimumSLA = updateModeloEventoDto.metaPartnershipMinimumSLA;
-      if (updateModeloEventoDto.metaPartnershipStretchedSLA !== undefined) updateData.metaPartnershipStretchedSLA = updateModeloEventoDto.metaPartnershipStretchedSLA;
-      if (updateModeloEventoDto.definirFuncionalidadDependencia !== undefined) updateData.definirFuncionalidadDependencia = updateModeloEventoDto.definirFuncionalidadDependencia;
-      if (updateModeloEventoDto.version !== undefined) updateData.version = updateModeloEventoDto.version;
-      if (updateModeloEventoDto.active !== undefined) updateData.active = updateModeloEventoDto.active;
+      // Validar secuencia de fechas solo si hay fechas siendo actualizadas
+      const hasDateUpdates = updateModeloEventoDto.fechaAlta || 
+                            updateModeloEventoDto.fechaActivacion || 
+                            updateModeloEventoDto.fechaInicioPeriodoGarantia || 
+                            updateModeloEventoDto.fechaInicioOficial || 
+                            updateModeloEventoDto.fechaInicioVersion || 
+                            updateModeloEventoDto.fechaInactivacion;
 
-      // Convertir fechas específicamente
-      if (updateModeloEventoDto.fechaAlta) {
-        updateData.fechaAlta = new Date(updateModeloEventoDto.fechaAlta);
+      if (hasDateUpdates) {
+        const updatedData = { ...existingModeloEvento, ...updateModeloEventoDto };
+        this.validateDateSequence(updatedData as DateValidationData);
       }
-      if (updateModeloEventoDto.fechaActivacion) {
-        updateData.fechaActivacion = new Date(updateModeloEventoDto.fechaActivacion);
-      }
-      if (updateModeloEventoDto.fechaInicioPeriodoGarantia) {
-        updateData.fechaInicioPeriodoGarantia = new Date(updateModeloEventoDto.fechaInicioPeriodoGarantia);
-      }
-      if (updateModeloEventoDto.fechaInicioOficial) {
-        updateData.fechaInicioOficial = new Date(updateModeloEventoDto.fechaInicioOficial);
-      }
-      if (updateModeloEventoDto.fechaInicioVersion) {
-        updateData.fechaInicioVersion = new Date(updateModeloEventoDto.fechaInicioVersion);
-      }
-      if (updateModeloEventoDto.fechaInactivacion) {
-        updateData.fechaInactivacion = new Date(updateModeloEventoDto.fechaInactivacion);
-      }
+
+      // Preparar datos de actualización con conversión automática de fechas
+      const updateData = this.prepareUpdateData(updateModeloEventoDto);
 
       await this.modeloEventoRepository.update(id, updateData);
 
@@ -621,5 +598,38 @@ export class ModeloEventosService {
     if (fechaInactivacion && fechaInactivacion <= fechaInicioOficial) {
       throw new InvalidDateRangeException('La fecha de inactivación debe ser posterior a la fecha de inicio oficial');
     }
+  }
+
+  // Método auxiliar para preparar datos de actualización
+  private prepareUpdateData(updateDto: UpdateModeloEventoDto): Partial<ModeloEvento> {
+    const updateData: Partial<ModeloEvento> = {};
+
+    // Copiar campos simples directamente
+    if (updateDto.buId !== undefined) updateData.buId = updateDto.buId;
+    if (updateDto.cfsId !== undefined) updateData.cfsId = updateDto.cfsId;
+    if (updateDto.serviceOwnerId !== undefined) updateData.serviceOwnerId = updateDto.serviceOwnerId;
+    if (updateDto.estatusModeloId !== undefined) updateData.estatusModeloId = updateDto.estatusModeloId;
+    if (updateDto.estatusMedicionId !== undefined) updateData.estatusMedicionId = updateDto.estatusMedicionId;
+    if (updateDto.modelo !== undefined) updateData.modelo = updateDto.modelo;
+    if (updateDto.fuente !== undefined) updateData.fuente = updateDto.fuente;
+    if (updateDto.metaDisponibilidad !== undefined) updateData.metaDisponibilidad = updateDto.metaDisponibilidad;
+    if (updateDto.partnershipId !== undefined) updateData.partnershipId = updateDto.partnershipId;
+    if (updateDto.estatusMedicionPartnership !== undefined) updateData.estatusMedicionPartnership = updateDto.estatusMedicionPartnership;
+    if (updateDto.metaPartnershipExpectedSLA !== undefined) updateData.metaPartnershipExpectedSLA = updateDto.metaPartnershipExpectedSLA;
+    if (updateDto.metaPartnershipMinimumSLA !== undefined) updateData.metaPartnershipMinimumSLA = updateDto.metaPartnershipMinimumSLA;
+    if (updateDto.metaPartnershipStretchedSLA !== undefined) updateData.metaPartnershipStretchedSLA = updateDto.metaPartnershipStretchedSLA;
+    if (updateDto.definirFuncionalidadDependencia !== undefined) updateData.definirFuncionalidadDependencia = updateDto.definirFuncionalidadDependencia;
+    if (updateDto.version !== undefined) updateData.version = updateDto.version;
+    if (updateDto.active !== undefined) updateData.active = updateDto.active;
+
+    // Convertir fechas
+    if (updateDto.fechaAlta) updateData.fechaAlta = new Date(updateDto.fechaAlta);
+    if (updateDto.fechaActivacion) updateData.fechaActivacion = new Date(updateDto.fechaActivacion);
+    if (updateDto.fechaInicioPeriodoGarantia) updateData.fechaInicioPeriodoGarantia = new Date(updateDto.fechaInicioPeriodoGarantia);
+    if (updateDto.fechaInicioOficial) updateData.fechaInicioOficial = new Date(updateDto.fechaInicioOficial);
+    if (updateDto.fechaInicioVersion) updateData.fechaInicioVersion = new Date(updateDto.fechaInicioVersion);
+    if (updateDto.fechaInactivacion) updateData.fechaInactivacion = new Date(updateDto.fechaInactivacion);
+
+    return updateData;
   }
 }
