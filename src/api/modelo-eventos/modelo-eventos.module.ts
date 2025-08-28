@@ -9,6 +9,7 @@ import { ServiceOwner } from '../service-owners-catalogo/entities/service-owner.
 import { StatusModeloCatalogo } from '../status-modelo-catalogo/entities/status-modelo-catalogo.entity';
 import { StatusMedicion } from '../status-medicion-catalogo/entities/status-medicion.entity';
 import { Partnership } from '../partnership-catalogo/entities/partnership.entity';
+import { ModeloEventoSeedService } from './seeds/modelo-evento-seed.service';
 
 
 @Module({
@@ -24,7 +25,7 @@ import { Partnership } from '../partnership-catalogo/entities/partnership.entity
     ])
   ],
   controllers: [ModeloEventosController],
-  providers: [ModeloEventosService ],
-  exports: [ModeloEventosService]
+  providers: [ModeloEventosService, ModeloEventoSeedService],
+  exports: [ModeloEventosService, ModeloEventoSeedService]
 })
 export class ModeloEventosModule {}

@@ -64,6 +64,26 @@
       "key": "incidenciaId",
       "value": "1",
       "type": "string"
+    },
+    {
+      "key": "serviceOwnerId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "partnershipId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "modeloEventoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "createdModeloEventoId",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -1753,6 +1773,282 @@
                   "raw": "{{baseUrl}}/incidencias/{{incidenciaId}}",
                   "host": ["{{baseUrl}}"],
                   "path": ["incidencias", "{{incidenciaId}}"]
+                },
+                "description": "Verificar que se actualización correctamente y obtener con todas las relaciones"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modelo Eventos",
+      "description": "Endpoints para gestionar los modelos de eventos del sistema",
+      "item": [
+        {
+          "name": "Crear Modelo Evento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"buId\": {{buId}},\n  \"cfsId\": {{cfsId}},\n  \"serviceOwnerId\": {{serviceOwnerId}},\n  \"estatusModeloId\": {{statusModeloId}},\n  \"estatusMedicionId\": {{statusMedicionId}},\n  \"modelo\": \"Eventos\",\n  \"fuente\": \"Helix\",\n  \"metaDisponibilidad\": 99.5,\n  \"partnershipId\": {{partnershipId}},\n  \"estatusMedicionPartnership\": \"Activo\",\n  \"metaPartnershipExpectedSLA\": 95.0,\n  \"metaPartnershipMinimumSLA\": 90.0,\n  \"metaPartnershipStretchedSLA\": 98.0,\n  \"definirFuncionalidadDependencia\": \"Procesamiento de eventos críticos del sistema\",\n  \"fechaAlta\": \"2025-08-28\",\n  \"fechaActivacion\": \"2025-08-29\",\n  \"fechaInicioPeriodoGarantia\": \"2025-08-30\",\n  \"fechaInicioOficial\": \"2025-09-01\",\n  \"version\": 1.0,\n  \"fechaInicioVersion\": \"2025-08-28\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos"]
+            },
+            "description": "Crear un nuevo modelo de evento en el sistema"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener todos los Modelos de Eventos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos"]
+            },
+            "description": "Obtener todos los modelos de eventos activos con sus relaciones"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Modelo Evento por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos/{{modeloEventoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos", "{{modeloEventoId}}"]
+            },
+            "description": "Obtener un modelo de evento específico por su ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Modelo Evento",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelo\": \"Batch\",\n  \"fuente\": \"INFOCENTER\",\n  \"metaDisponibilidad\": 98.5,\n  \"estatusMedicionPartnership\": \"En Revisión\",\n  \"metaPartnershipExpectedSLA\": 97.0,\n  \"definirFuncionalidadDependencia\": \"Procesamiento de eventos críticos del sistema - Actualizado\",\n  \"version\": 1.1,\n  \"fechaInicioVersion\": \"2025-08-29\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos/{{modeloEventoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos", "{{modeloEventoId}}"]
+            },
+            "description": "Actualizar un modelo de evento existente (actualización parcial)"
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Modelo Evento",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos/{{modeloEventoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos", "{{modeloEventoId}}"]
+            },
+            "description": "Eliminar (desactivar) un modelo de evento del sistema"
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por BU",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos/by-bu/{{buId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos", "bu", "{{buId}}"]
+            },
+            "description": "Buscar modelos de eventos por Business Unit"
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por CFS",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos/by-cfs/{{cfsId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos", "cfs", "{{cfsId}}"]
+            },
+            "description": "Buscar modelos de eventos por CFS"
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por Versión",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos/by-version/1.0",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos", "version", "1.0"]
+            },
+            "description": "Buscar modelos de eventos por versión específica"
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por Status Modelo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-eventos/by-status-modelo/{{statusModeloId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-eventos", "status-modelo", "{{statusModeloId}}"]
+            },
+            "description": "Buscar modelos de eventos por status de modelo"
+          },
+          "response": []
+        },
+        {
+          "name": "Workflow Completo",
+          "description": "Flujo de trabajo completo para probar el modelo de eventos",
+          "item": [
+            {
+              "name": "1. Crear Modelo Evento",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Extraer ID del modelo creado para usar en siguientes requests",
+                      "if (pm.response.code === 201) {",
+                      "    const responseJson = pm.response.json();",
+                      "    if (responseJson.data && responseJson.data.id) {",
+                      "        pm.environment.set('createdModeloEventoId', responseJson.data.id);",
+                      "        console.log('ID del modelo creado: ' + responseJson.data.id);",
+                      "    }",
+                      "}",
+                      "",
+                      "pm.test('Modelo evento creado correctamente', function () {",
+                      "    pm.expect(pm.response.code).to.eql(201);",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson.data).to.have.property('id');",
+                      "    pm.expect(responseJson.data.datosCFS).to.have.property('buId');",
+                      "    pm.expect(responseJson.data.datosMedicion).to.have.property('modelo');",
+                      "    pm.expect(responseJson.data.partnership).to.have.property('partnershipId');",
+                      "    pm.expect(responseJson.data.fechas).to.have.property('fechaAlta');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"buId\": {{buId}},\n  \"cfsId\": {{cfsId}},\n  \"serviceOwnerId\": {{serviceOwnerId}},\n  \"estatusModeloId\": {{statusModeloId}},\n  \"estatusMedicionId\": {{statusMedicionId}},\n  \"modelo\": \"Eventos\",\n  \"fuente\": \"Helix\",\n  \"metaDisponibilidad\": 99.5,\n  \"partnershipId\": {{partnershipId}},\n  \"estatusMedicionPartnership\": \"Activo\",\n  \"metaPartnershipExpectedSLA\": 95.0,\n  \"metaPartnershipMinimumSLA\": 90.0,\n  \"metaPartnershipStretchedSLA\": 98.0,\n  \"definirFuncionalidadDependencia\": \"Procesamiento de eventos críticos del sistema - Workflow Test\",\n  \"fechaAlta\": \"2025-08-28\",\n  \"fechaActivacion\": \"2025-08-29\",\n  \"fechaInicioPeriodoGarantia\": \"2025-08-30\",\n  \"fechaInicioOficial\": \"2025-09-01\",\n  \"version\": 1.0,\n  \"fechaInicioVersion\": \"2025-08-28\",\n  \"active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-eventos",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-eventos"]
+                }
+              }
+            },
+            {
+              "name": "2. Obtener Modelo creado",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Modelo obtenido correctamente', function () {",
+                      "    pm.expect(pm.response.code).to.eql(200);",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson.data).to.have.property('id');",
+                      "    pm.expect(responseJson.data.datosCFS.buNombre).to.exist;",
+                      "    pm.expect(responseJson.data.datosCFS.cfsNombre).to.exist;",
+                      "    pm.expect(responseJson.data.datosCFS.serviceOwnerNombre).to.exist;",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-eventos/{{createdModeloEventoId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-eventos", "{{createdModeloEventoId}}"]
+                }
+              }
+            },
+            {
+              "name": "3. Actualizar Modelo",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Modelo actualizado correctamente', function () {",
+                      "    pm.expect(pm.response.code).to.eql(200);",
+                      "    const responseJson = pm.response.json();",
+                      "    pm.expect(responseJson.data.datosMedicion.modelo).to.eql('Batch');",
+                      "    pm.expect(responseJson.data.fechas.version).to.eql(1.1);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"modelo\": \"Batch\",\n  \"fuente\": \"INFOCENTER\",\n  \"metaDisponibilidad\": 98.5,\n  \"version\": 1.1,\n  \"fechaInicioVersion\": \"2025-08-29\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-eventos/{{createdModeloEventoId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-eventos", "{{createdModeloEventoId}}"]
+                }
+              }
+            },
+            {
+              "name": "4. Verificar actualización",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-eventos/{{createdModeloEventoId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-eventos", "{{createdModeloEventoId}}"]
                 },
                 "description": "Verificar que se actualización correctamente y obtener con todas las relaciones"
               }

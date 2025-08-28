@@ -602,34 +602,7 @@ export class ModeloEventosService {
 
   // Método auxiliar para preparar datos de actualización
   private prepareUpdateData(updateDto: UpdateModeloEventoDto): Partial<ModeloEvento> {
-    const updateData: Partial<ModeloEvento> = {};
-
-    // Copiar campos simples directamente
-    if (updateDto.buId !== undefined) updateData.buId = updateDto.buId;
-    if (updateDto.cfsId !== undefined) updateData.cfsId = updateDto.cfsId;
-    if (updateDto.serviceOwnerId !== undefined) updateData.serviceOwnerId = updateDto.serviceOwnerId;
-    if (updateDto.estatusModeloId !== undefined) updateData.estatusModeloId = updateDto.estatusModeloId;
-    if (updateDto.estatusMedicionId !== undefined) updateData.estatusMedicionId = updateDto.estatusMedicionId;
-    if (updateDto.modelo !== undefined) updateData.modelo = updateDto.modelo;
-    if (updateDto.fuente !== undefined) updateData.fuente = updateDto.fuente;
-    if (updateDto.metaDisponibilidad !== undefined) updateData.metaDisponibilidad = updateDto.metaDisponibilidad;
-    if (updateDto.partnershipId !== undefined) updateData.partnershipId = updateDto.partnershipId;
-    if (updateDto.estatusMedicionPartnership !== undefined) updateData.estatusMedicionPartnership = updateDto.estatusMedicionPartnership;
-    if (updateDto.metaPartnershipExpectedSLA !== undefined) updateData.metaPartnershipExpectedSLA = updateDto.metaPartnershipExpectedSLA;
-    if (updateDto.metaPartnershipMinimumSLA !== undefined) updateData.metaPartnershipMinimumSLA = updateDto.metaPartnershipMinimumSLA;
-    if (updateDto.metaPartnershipStretchedSLA !== undefined) updateData.metaPartnershipStretchedSLA = updateDto.metaPartnershipStretchedSLA;
-    if (updateDto.definirFuncionalidadDependencia !== undefined) updateData.definirFuncionalidadDependencia = updateDto.definirFuncionalidadDependencia;
-    if (updateDto.version !== undefined) updateData.version = updateDto.version;
-    if (updateDto.active !== undefined) updateData.active = updateDto.active;
-
-    // Convertir fechas
-    if (updateDto.fechaAlta) updateData.fechaAlta = new Date(updateDto.fechaAlta);
-    if (updateDto.fechaActivacion) updateData.fechaActivacion = new Date(updateDto.fechaActivacion);
-    if (updateDto.fechaInicioPeriodoGarantia) updateData.fechaInicioPeriodoGarantia = new Date(updateDto.fechaInicioPeriodoGarantia);
-    if (updateDto.fechaInicioOficial) updateData.fechaInicioOficial = new Date(updateDto.fechaInicioOficial);
-    if (updateDto.fechaInicioVersion) updateData.fechaInicioVersion = new Date(updateDto.fechaInicioVersion);
-    if (updateDto.fechaInactivacion) updateData.fechaInactivacion = new Date(updateDto.fechaInactivacion);
-
-    return updateData;
+    // Procesar DTO: filtrar undefined y transformar fechas en una sola operación
+    return UpdateModeloEventoDto.processForUpdate(updateDto) as Partial<ModeloEvento>;
   }
 }

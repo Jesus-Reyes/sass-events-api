@@ -10,10 +10,9 @@ import { DashboardSeedService } from '../../api/dashboard/seeds/dashboard-seed.s
 import { OperativaCatalogoSeedService } from '../../api/operativas-catalogo/seeds/operativa-catalogo-seed.service';
 import { MetricaImpactoSeedService } from '../../api/metricas-impacto/seeds/metrica-impacto-seed.service';
 import { IncidenciasSeedService } from '../../api/incidencias/seeds/incidencias-seed.service';
-
-
 import { ServiceOwnersSeed } from 'src/api/service-owners-catalogo/seed/service-owners-catalogo-seed.service';
 import { PartnershipSeed } from 'src/api/partnership-catalogo/seed/partnership-catalogo-seed.service';
+import { ModeloEventoSeedService } from '../../api/modelo-eventos/seeds/modelo-evento-seed.service';
 
 
 @Injectable()
@@ -34,7 +33,7 @@ export class SeedOrchestratorService implements OnModuleInit {
     private readonly incidenciasSeedService: IncidenciasSeedService,
     private readonly serviceOwnersSeed: ServiceOwnersSeed,
     private readonly partnershipSeed: PartnershipSeed,
-    
+    private readonly modeloEventoSeedService: ModeloEventoSeedService,
   ) {}
 
   async onModuleInit() {
@@ -97,8 +96,9 @@ export class SeedOrchestratorService implements OnModuleInit {
       this.logger.log('🚨 Ejecutando Incidencias seeds...');
       await this.incidenciasSeedService.executeSeed();
 
-      // 14. Modelos de Eventos (depende de Geography, BU, CFS, ServiceOwners y Partnerships)
-   
+      // 14. Modelos de Eventos (depende de BU, CFS, ServiceOwners, StatusModelo, StatusMedicion y Partnerships)
+      this.logger.log('📊 Ejecutando Modelos de Eventos seeds...');
+      await this.modeloEventoSeedService.executeSeed();
 
       this.logger.log('✅ Proceso de seeds completado exitosamente');
     } catch (error) {
