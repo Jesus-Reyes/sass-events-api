@@ -1,5 +1,7 @@
-import { IsNotEmpty, IsNumber, IsString, IsOptional, IsIn, IsDateString, Min, Max } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsOptional, IsIn, IsDateString, Min, Max, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { VentanasOperacionDto } from './ventana.dto';
+import { IsValidVentanas } from '../decorators/ventana.decorators';
 
 export class CreateModeloEventoDto {
   // Datos CFS - Pertenencia
@@ -111,6 +113,13 @@ export class CreateModeloEventoDto {
   @IsOptional()
   @IsDateString()
   fechaInactivacion?: string;
+
+  // Ventanas de Operación
+  @IsOptional()
+  @IsValidVentanas()
+  @ValidateNested()
+  @Type(() => VentanasOperacionDto)
+  ventanasOperacion?: VentanasOperacionDto;
 
   @IsOptional()
   active?: boolean;

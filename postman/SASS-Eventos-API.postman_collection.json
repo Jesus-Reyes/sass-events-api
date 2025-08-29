@@ -1139,9 +1139,9 @@
           "request": {
             "method": "DELETE",
             "url": {
-              "raw": "{{baseUrl}}/rollback/partial/status-medicion",
+              "raw": "{{baseUrl}}/rollback/partial/status-medicion-catalogo",
               "host": ["{{baseUrl}}"],
-              "path": ["rollback", "partial", "status-medicion"]
+              "path": ["rollback", "partial", "status-medicion-catalogo"]
             },
             "description": "Eliminar solo los datos de la tabla status_mediciones"
           }
@@ -1228,9 +1228,9 @@
               "raw": "{\n  \"nombre\": \"En proceso\",\n  \"active\": true\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/status-medicion",
+              "raw": "{{baseUrl}}/status-medicion-catalogo",
               "host": ["{{baseUrl}}"],
-              "path": ["status-medicion"]
+              "path": ["status-medicion-catalogo"]
             },
             "description": "Crear un nuevo estado para mediciones del sistema"
           }
@@ -1240,9 +1240,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/status-medicion",
+              "raw": "{{baseUrl}}/status-medicion-catalogo",
               "host": ["{{baseUrl}}"],
-              "path": ["status-medicion"]
+              "path": ["status-medicion-catalogo"]
             },
             "description": "Obtener listado completo de estados de mediciones"
           }
@@ -1252,9 +1252,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/status-medicion/active",
+              "raw": "{{baseUrl}}/status-medicion-catalogo/active",
               "host": ["{{baseUrl}}"],
-              "path": ["status-medicion", "active"]
+              "path": ["status-medicion-catalogo", "active"]
             },
             "description": "Obtener solo los estados de medición activos (ideal para dropdowns)"
           }
@@ -1264,9 +1264,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/status-medicion/{{statusMedicionId}}",
+              "raw": "{{baseUrl}}/status-medicion-catalogo/{{statusMedicionId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["status-medicion", "{{statusMedicionId}}"]
+              "path": ["status-medicion-catalogo", "{{statusMedicionId}}"]
             },
             "description": "Obtener información de un estado de medición específico"
           }
@@ -1286,9 +1286,9 @@
               "raw": "{\n  \"nombre\": \"Completado\",\n  \"active\": true\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/status-medicion/{{statusMedicionId}}",
+              "raw": "{{baseUrl}}/status-medicion-catalogo/{{statusMedicionId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["status-medicion", "{{statusMedicionId}}"]
+              "path": ["status-medicion-catalogo", "{{statusMedicionId}}"]
             },
             "description": "Actualizar información de un estado de medición"
           }
@@ -1298,9 +1298,9 @@
           "request": {
             "method": "PATCH",
             "url": {
-              "raw": "{{baseUrl}}/status-medicion/{{statusMedicionId}}/toggle-active",
+              "raw": "{{baseUrl}}/status-medicion-catalogo/{{statusMedicionId}}/toggle-active",
               "host": ["{{baseUrl}}"],
-              "path": ["status-medicion", "{{statusMedicionId}}", "toggle-active"]
+              "path": ["status-medicion-catalogo", "{{statusMedicionId}}", "toggle-active"]
             },
             "description": "Alternar estado activo/inactivo de un status de medición"
           }
@@ -1310,9 +1310,9 @@
           "request": {
             "method": "DELETE",
             "url": {
-              "raw": "{{baseUrl}}/status-medicion/{{statusMedicionId}}",
+              "raw": "{{baseUrl}}/status-medicion-catalogo/{{statusMedicionId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["status-medicion", "{{statusMedicionId}}"]
+              "path": ["status-medicion-catalogo", "{{statusMedicionId}}"]
             },
             "description": "Eliminar un estado de medición del sistema"
           }

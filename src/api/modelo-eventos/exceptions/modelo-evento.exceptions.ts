@@ -48,6 +48,12 @@ export class InvalidDateRangeException extends HttpException {
   }
 }
 
+export class InvalidVentanasException extends HttpException {
+  constructor(errors: string[]) {
+    super(`Configuración de ventanas inválida: ${errors.join('; ')}`, HttpStatus.BAD_REQUEST);
+  }
+}
+
 export class DatabaseException extends HttpException {
   constructor(message?: string) {
     super(

@@ -13,6 +13,7 @@ import { ServiceOwner } from '../../service-owners-catalogo/entities/service-own
 import { StatusModeloCatalogo } from '../../status-modelo-catalogo/entities/status-modelo-catalogo.entity';
 import { StatusMedicion } from '../../status-medicion-catalogo/entities/status-medicion.entity';
 import { Partnership } from '../../partnership-catalogo/entities/partnership.entity';
+import { VentanasOperacion } from '../interfaces/ventana.interface';
 
 @Entity('modelos_eventos')
 export class ModeloEvento {
@@ -63,6 +64,10 @@ export class ModeloEvento {
 
   @Column({ name: 'definir_funcionalidad_dependencia', type: 'text', nullable: true })
   definirFuncionalidadDependencia: string;
+
+  // Ventanas de Operación
+  @Column({ name: 'ventanas_operacion', type: 'jsonb', nullable: true })
+  ventanasOperacion: VentanasOperacion;
 
   // Fechas - Registro
   @Column({ name: 'fecha_alta', type: 'date' })

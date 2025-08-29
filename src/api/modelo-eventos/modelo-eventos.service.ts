@@ -10,6 +10,7 @@ import { ServiceOwner } from '../service-owners-catalogo/entities/service-owner.
 import { StatusModeloCatalogo } from '../status-modelo-catalogo/entities/status-modelo-catalogo.entity';
 import { StatusMedicion } from '../status-medicion-catalogo/entities/status-medicion.entity';
 import { Partnership } from '../partnership-catalogo/entities/partnership.entity';
+import { VentanaValidator } from './validators/ventana.validator';
 import {
   ModeloEventoNotFoundException,
   BuCatalogoNotFoundException,
@@ -18,7 +19,8 @@ import {
   StatusModeloNotFoundException,
   StatusMedicionNotFoundException,
   PartnershipNotFoundException,
-  InvalidDateRangeException
+  InvalidDateRangeException,
+  InvalidVentanasException
 } from './exceptions/modelo-evento.exceptions';
 
 interface DateValidationData {
@@ -66,6 +68,11 @@ export class ModeloEventosService {
       // Validar secuencia de fechas
       this.validateDateSequence(createModeloEventoDto);
 
+      // Validar ventanas de operación si están presentes
+      if (createModeloEventoDto.ventanasOperacion) {
+        this.validateVentanasOperacion(createModeloEventoDto.ventanasOperacion);
+      }
+
       const modeloEvento = this.modeloEventoRepository.create({
         ...createModeloEventoDto,
         fechaAlta: new Date(createModeloEventoDto.fechaAlta),
@@ -74,6 +81,7 @@ export class ModeloEventosService {
         fechaInicioOficial: new Date(createModeloEventoDto.fechaInicioOficial),
         fechaInicioVersion: new Date(createModeloEventoDto.fechaInicioVersion),
         fechaInactivacion: createModeloEventoDto.fechaInactivacion ? new Date(createModeloEventoDto.fechaInactivacion) : null,
+        ventanasOperacion: createModeloEventoDto.ventanasOperacion as any,
       });
 
       const savedModelo = await this.modeloEventoRepository.save(modeloEvento);
@@ -113,6 +121,7 @@ export class ModeloEventosService {
             fechaInicioVersion: savedModelo.fechaInicioVersion,
             fechaInactivacion: savedModelo.fechaInactivacion
           },
+          ventanasOperacion: savedModelo.ventanasOperacion,
           active: savedModelo.active,
           createdAt: savedModelo.createdAt,
           updatedAt: savedModelo.updatedAt
@@ -305,6 +314,11 @@ export class ModeloEventosService {
       if (hasDateUpdates) {
         const updatedData = { ...existingModeloEvento, ...updateModeloEventoDto };
         this.validateDateSequence(updatedData as DateValidationData);
+      }
+
+      // Validar ventanas de operación si están siendo actualizadas
+      if (updateModeloEventoDto.ventanasOperacion) {
+        this.validateVentanasOperacion(updateModeloEventoDto.ventanasOperacion);
       }
 
       // Preparar datos de actualización con conversión automática de fechas
@@ -597,6 +611,15 @@ export class ModeloEventosService {
     // Si existe fechaInactivacion, debe ser posterior a fechaInicioOficial
     if (fechaInactivacion && fechaInactivacion <= fechaInicioOficial) {
       throw new InvalidDateRangeException('La fecha de inactivación debe ser posterior a la fecha de inicio oficial');
+    }
+  }
+
+  // Validar ventanas de operación
+  private validateVentanasOperacion(ventanas: any): void {
+    const validation = VentanaValidator.validateVentanasConsistency(ventanas);
+    
+    if (!validation.isValid) {
+      throw new InvalidVentanasException(validation.errors);
     }
   }
 
