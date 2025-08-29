@@ -46,6 +46,11 @@
       "type": "string"
     },
     {
+      "key": "modeloVersion",
+      "value": "1.0.0",
+      "type": "string"
+    },
+    {
       "key": "dashboardId",
       "value": "1",
       "type": "string"
@@ -563,18 +568,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Cliente Premium\",\n  \"description\": \"Cliente con servicios premium y alto volumen de transacciones\",\n  \"cfsId\": {{cfsId}},\n  \"statusModeloId\": {{statusModeloId}},\n  \"active\": true\n}"
+              "raw": "{\n  \"idCFS\": {{cfsId}},\n  \"idStatusModelo\": {{statusModeloId}},\n  \"fechaAlta\": \"2024-01-15\",\n  \"fechaActivacion\": \"2024-01-20\",\n  \"fechaInicioVersion\": \"2024-02-01\",\n  \"fechaInactivacion\": \"2024-12-31\",\n  \"version\": \"1.0.0\",\n  \"contribuyentes\": [\"BBVA_ES\", \"BBVA_MX\", \"BBVA_AR\"]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/modelo-contribuyente",
               "host": ["{{baseUrl}}"],
               "path": ["modelo-contribuyente"]
             },
-            "description": "Crear un nuevo modelo de contribuyente asociado a un CFS"
+            "description": "Crear un nuevo modelo de contribuyente con fechas de ciclo de vida y lista de contribuyentes"
           }
         },
         {
-          "name": "Obtener todos los Modelos",
+          "name": "Obtener todos los Modelos Contribuyentes",
           "request": {
             "method": "GET",
             "url": {
@@ -582,11 +587,11 @@
               "host": ["{{baseUrl}}"],
               "path": ["modelo-contribuyente"]
             },
-            "description": "Obtener listado completo de modelos de contribuyente"
+            "description": "Obtener listado completo de modelos de contribuyente con sus relaciones (CFS y Status)"
           }
         },
         {
-          "name": "Obtener Modelo por ID",
+          "name": "Obtener Modelo Contribuyente por ID",
           "request": {
             "method": "GET",
             "url": {
@@ -594,7 +599,26 @@
               "host": ["{{baseUrl}}"],
               "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}"]
             },
-            "description": "Obtener información detallada de un modelo específico"
+            "description": "Obtener información detallada de un modelo contribuyente específico"
+          }
+        },
+        {
+          "name": "Obtener Modelos por Versión",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/modelo-contribuyente/by-version?version={{modeloVersion}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modelo-contribuyente", "by-version"],
+              "query": [
+                {
+                  "key": "version",
+                  "value": "{{modeloVersion}}",
+                  "description": "Versión del modelo a filtrar"
+                }
+              ]
+            },
+            "description": "Obtener todos los modelos contribuyentes de una versión específica"
           }
         },
         {
@@ -606,7 +630,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["modelo-contribuyente", "by-cfs", "{{cfsId}}"]
             },
-            "description": "Obtener todos los modelos de contribuyente de un CFS específico"
+            "description": "Obtener todos los modelos de contribuyente asociados a un CFS específico"
           }
         },
         {
@@ -618,7 +642,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["modelo-contribuyente", "by-status", "{{statusModeloId}}"]
             },
-            "description": "Obtener todos los modelos con un estado específico"
+            "description": "Obtener todos los modelos contribuyentes con un estado específico"
           }
         },
         {
@@ -633,36 +657,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Cliente Premium Plus\",\n  \"description\": \"Cliente premium con servicios exclusivos y beneficios adicionales\",\n  \"statusModeloId\": 2,\n  \"active\": true\n}"
+              "raw": "{\n  \"version\": \"1.1.0\",\n  \"contribuyentes\": [\"BBVA_ES\", \"BBVA_MX\", \"BBVA_AR\", \"BBVA_CO\"],\n  \"fechaInactivacion\": \"2025-12-31\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/modelo-contribuyente/{{modeloContribuyenteId}}",
               "host": ["{{baseUrl}}"],
               "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}"]
             },
-            "description": "Actualizar información de un modelo de contribuyente"
-          }
-        },
-        {
-          "name": "Cambiar Status del Modelo",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"statusModeloId\": 3\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/modelo-contribuyente/{{modeloContribuyenteId}}/change-status",
-              "host": ["{{baseUrl}}"],
-              "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}", "change-status"]
-            },
-            "description": "Cambiar solo el estado de un modelo de contribuyente"
+            "description": "Actualizar información de un modelo de contribuyente (campos opcionales)"
           }
         },
         {
@@ -674,8 +676,79 @@
               "host": ["{{baseUrl}}"],
               "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}"]
             },
-            "description": "Eliminar un modelo de contribuyente del sistema"
+            "description": "Eliminar un modelo de contribuyente del sistema (eliminación lógica)"
           }
+        },
+        {
+          "name": "Casos de Prueba - Validaciones",
+          "item": [
+            {
+              "name": "Error: Crear con fechas inválidas",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idCFS\": {{cfsId}},\n  \"idStatusModelo\": {{statusModeloId}},\n  \"fechaAlta\": \"2024-02-01\",\n  \"fechaActivacion\": \"2024-01-15\",\n  \"fechaInicioVersion\": \"2024-01-10\",\n  \"version\": \"1.0.0\",\n  \"contribuyentes\": [\"BBVA_ES\"]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-contribuyente",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-contribuyente"]
+                },
+                "description": "Prueba con fechas en orden incorrecto - debe fallar con error 400"
+              }
+            },
+            {
+              "name": "Error: CFS inexistente",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idCFS\": 99999,\n  \"idStatusModelo\": {{statusModeloId}},\n  \"fechaAlta\": \"2024-01-15\",\n  \"fechaActivacion\": \"2024-01-20\",\n  \"fechaInicioVersion\": \"2024-02-01\",\n  \"version\": \"1.0.0\",\n  \"contribuyentes\": [\"BBVA_ES\"]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-contribuyente",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-contribuyente"]
+                },
+                "description": "Prueba con CFS inexistente - debe fallar con error 404"
+              }
+            },
+            {
+              "name": "Error: Contribuyentes vacío",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idCFS\": {{cfsId}},\n  \"idStatusModelo\": {{statusModeloId}},\n  \"fechaAlta\": \"2024-01-15\",\n  \"fechaActivacion\": \"2024-01-20\",\n  \"fechaInicioVersion\": \"2024-02-01\",\n  \"version\": \"1.0.0\",\n  \"contribuyentes\": []\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/modelo-contribuyente",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["modelo-contribuyente"]
+                },
+                "description": "Prueba con array de contribuyentes vacío - debe fallar con error 400"
+              }
+            }
+          ]
         }
       ]
     },
@@ -834,17 +907,18 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Cliente Retail\",\n  \"description\": \"Cliente individual con servicios básicos\",\n  \"cfsId\": 1,\n  \"statusModeloId\": 1,\n  \"active\": true\n}"
+                  "raw": "{\n  \"idCFS\": 1,\n  \"idStatusModelo\": 1,\n  \"fechaAlta\": \"2024-01-15\",\n  \"fechaActivacion\": \"2024-01-20\",\n  \"fechaInicioVersion\": \"2024-02-01\",\n  \"fechaInactivacion\": \"2024-12-31\",\n  \"version\": \"1.0.0\",\n  \"contribuyentes\": [\"BBVA_ES\", \"BBVA_MX\"]\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/modelo-contribuyente",
                   "host": ["{{baseUrl}}"],
                   "path": ["modelo-contribuyente"]
-                }
+                },
+                "description": "Crear modelo contribuyente con fechas de ciclo de vida y contribuyentes"
               }
             },
             {
-              "name": "3. Cambiar Status a Aprobado",
+              "name": "3. Actualizar Modelo Contribuyente",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -855,13 +929,14 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"statusModeloId\": 2\n}"
+                  "raw": "{\n  \"idStatusModelo\": 2,\n  \"version\": \"1.1.0\",\n  \"contribuyentes\": [\"BBVA_ES\", \"BBVA_MX\", \"BBVA_AR\"]\n}"
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/modelo-contribuyente/1/change-status",
+                  "raw": "{{baseUrl}}/modelo-contribuyente/{{modeloContribuyenteId}}",
                   "host": ["{{baseUrl}}"],
-                  "path": ["modelo-contribuyente", "1", "change-status"]
-                }
+                  "path": ["modelo-contribuyente", "{{modeloContribuyenteId}}"]
+                },
+                "description": "Actualizar status del modelo y agregar más contribuyentes"
               }
             }
           ]

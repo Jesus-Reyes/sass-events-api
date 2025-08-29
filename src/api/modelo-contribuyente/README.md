@@ -4,23 +4,26 @@ API para la gestión de modelos de contribuyentes del sistema SASS.
 
 ## Descripción
 
-Este módulo proporciona endpoints para gestionar los modelos de contribuyentes que están asociados a los CFS y tienen un estado específico del catálogo de status. Los modelos de contribuyentes representan perfiles o tipos de clientes que utilizan los servicios financieros críticos.
+Este módulo proporciona endpoints para gestionar los modelos de contribuyentes, que representan las configuraciones específicas de los modelos asociados a diferentes CFS (Critical Financial Services) y estados de modelo. Cada modelo tiene fechas de ciclo de vida, versión, y una lista de contribuyentes asociados.
 
 ## Endpoints
 
 Base URL: `/modelo-contribuyente`
 
 ### POST /modelo-contribuyente
-**Descripción**: Crear un nuevo modelo de contribuyente
+**Descripción**: Crear un nuevo modelo contribuyente
 
 **Body:**
 ```json
 {
-  "name": "Cliente Premium",
-  "description": "Cliente con servicios premium y alto volumen de transacciones",
-  "cfsId": 1,
-  "statusModeloId": 2,
-  "active": true
+  "idCFS": 1,
+  "idStatusModelo": 2,
+  "fechaAlta": "2024-01-15",
+  "fechaActivacion": "2024-01-20",
+  "fechaInicioVersion": "2024-02-01",
+  "fechaInactivacion": "2024-12-31",
+  "version": "1.0.0",
+  "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR"]
 }
 ```
 
@@ -30,20 +33,24 @@ Base URL: `/modelo-contribuyente`
   "status": 201,
   "data": {
     "id": 1,
-    "name": "Cliente Premium",
-    "description": "Cliente con servicios premium y alto volumen de transacciones",
-    "cfsId": 1,
-    "statusModeloId": 2,
+    "idCFS": 1,
+    "idStatusModelo": 2,
+    "fechaAlta": "2024-01-15",
+    "fechaActivacion": "2024-01-20",
+    "fechaInicioVersion": "2024-02-01",
+    "fechaInactivacion": "2024-12-31",
+    "version": "1.0.0",
+    "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR"],
     "active": true,
-    "createdAt": "2025-08-20T10:00:00.000Z",
-    "updatedAt": "2025-08-20T10:00:00.000Z"
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
   },
-  "message": "Modelo de contribuyente creado exitosamente"
+  "message": "Modelo Contribuyente creado exitosamente"
 }
 ```
 
 ### GET /modelo-contribuyente
-**Descripción**: Obtener todos los modelos de contribuyentes con sus relaciones
+**Descripción**: Obtener todos los modelos contribuyentes con sus relaciones
 
 **Respuesta Ejemplo:**
 ```json
@@ -52,145 +59,35 @@ Base URL: `/modelo-contribuyente`
   "data": [
     {
       "id": 1,
-      "name": "Cliente Premium",
-      "description": "Cliente con servicios premium y alto volumen de transacciones",
-      "cfsId": 1,
-      "statusModeloId": 2,
-      "cfsItem": {
-        "id": 1,
-        "name": "Pagos Digitales",
-        "campoN1": "Servicios de Pago",
-        "campoN2": "Digital",
-        "buCatalogo": {
-          "id": 1,
-          "name": "Digital Banking Spain",
-          "geography": {
-            "id": 1,
-            "name": "España",
-            "code": "ES"
-          }
-        }
-      },
-      "statusModelo": {
-        "id": 2,
-        "name": "Aprobado",
-        "active": true
-      },
-      "active": true,
-      "createdAt": "2025-08-20T10:00:00.000Z",
-      "updatedAt": "2025-08-20T10:00:00.000Z"
-    }
-  ],
-  "message": "Modelos de contribuyente obtenidos exitosamente"
-}
-```
-
-### GET /modelo-contribuyente/:id
-**Descripción**: Obtener un modelo de contribuyente específico por ID
-
-**Respuesta Ejemplo:**
-```json
-{
-  "status": 200,
-  "data": {
-    "id": 1,
-    "name": "Cliente Premium",
-    "description": "Cliente con servicios premium y alto volumen de transacciones",
-    "cfsId": 1,
-    "statusModeloId": 2,
-    "cfsItem": {
-      "id": 1,
-      "name": "Pagos Digitales",
-      "campoN1": "Servicios de Pago",
-      "campoN2": "Digital",
-      "buCatalogo": {
-        "id": 1,
-        "name": "Digital Banking Spain",
-        "geography": {
-          "id": 1,
-          "name": "España",
-          "code": "ES"
-        }
-      }
-    },
-    "statusModelo": {
-      "id": 2,
-      "name": "Aprobado",
-      "active": true
-    },
-    "active": true,
-    "createdAt": "2025-08-20T10:00:00.000Z",
-    "updatedAt": "2025-08-20T10:00:00.000Z"
-  },
-  "message": "Modelo de contribuyente obtenido exitosamente"
-}
-```
-
-### GET /modelo-contribuyente/by-cfs/:cfsId
-**Descripción**: Obtener todos los modelos de contribuyente de un CFS específico
-
-**Respuesta Ejemplo:**
-```json
-{
-  "status": 200,
-  "data": [
-    {
-      "id": 1,
-      "name": "Cliente Premium",
-      "description": "Cliente con servicios premium y alto volumen de transacciones",
-      "statusModelo": {
-        "id": 2,
-        "name": "Aprobado",
-        "active": true
-      },
-      "active": true,
-      "createdAt": "2025-08-20T10:00:00.000Z",
-      "updatedAt": "2025-08-20T10:00:00.000Z"
-    }
-  ],
-  "message": "Modelos de contribuyente del CFS obtenidos exitosamente"
-}
-```
-
-### GET /modelo-contribuyente/by-status/:statusId
-**Descripción**: Obtener todos los modelos de contribuyente por estado específico
-
-**Respuesta Ejemplo:**
-```json
-{
-  "status": 200,
-  "data": [
-    {
-      "id": 1,
-      "name": "Cliente Premium",
-      "description": "Cliente con servicios premium y alto volumen de transacciones",
-      "cfsItem": {
+      "idCFS": 1,
+      "idStatusModelo": 2,
+      "cfsCatalogo": {
         "id": 1,
         "name": "Pagos Digitales",
         "campoN1": "Servicios de Pago",
         "campoN2": "Digital"
       },
+      "statusModeloCatalogo": {
+        "id": 2,
+        "name": "Activo"
+      },
+      "fechaAlta": "2024-01-15",
+      "fechaActivacion": "2024-01-20",
+      "fechaInicioVersion": "2024-02-01",
+      "fechaInactivacion": "2024-12-31",
+      "version": "1.0.0",
+      "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR"],
       "active": true,
-      "createdAt": "2025-08-20T10:00:00.000Z",
-      "updatedAt": "2025-08-20T10:00:00.000Z"
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
     }
   ],
-  "message": "Modelos de contribuyente con estado 'Aprobado' obtenidos exitosamente"
+  "message": "Modelos Contribuyentes obtenidos exitosamente"
 }
 ```
 
-### PATCH /modelo-contribuyente/:id
-**Descripción**: Actualizar un modelo de contribuyente
-
-**Body:**
-```json
-{
-  "name": "Cliente Premium Plus",
-  "description": "Cliente premium con servicios exclusivos y beneficios adicionales",
-  "statusModeloId": 4,
-  "active": true
-}
-```
+### GET /modelo-contribuyente/:id
+**Descripción**: Obtener un modelo contribuyente específico por ID
 
 **Respuesta Ejemplo:**
 ```json
@@ -198,36 +95,155 @@ Base URL: `/modelo-contribuyente`
   "status": 200,
   "data": {
     "id": 1,
-    "name": "Cliente Premium Plus",
-    "description": "Cliente premium con servicios exclusivos y beneficios adicionales",
-    "cfsId": 1,
-    "statusModeloId": 4,
-    "cfsItem": {
+    "idCFS": 1,
+    "idStatusModelo": 2,
+    "cfsCatalogo": {
       "id": 1,
       "name": "Pagos Digitales",
       "campoN1": "Servicios de Pago",
       "campoN2": "Digital"
     },
-    "statusModelo": {
-      "id": 4,
-      "name": "Implementado",
-      "active": true
+    "statusModeloCatalogo": {
+      "id": 2,
+      "name": "Activo"
     },
+    "fechaAlta": "2024-01-15",
+    "fechaActivacion": "2024-01-20",
+    "fechaInicioVersion": "2024-02-01",
+    "fechaInactivacion": "2024-12-31",
+    "version": "1.0.0",
+    "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR"],
     "active": true,
-    "createdAt": "2025-08-20T10:00:00.000Z",
-    "updatedAt": "2025-08-20T11:30:00.000Z"
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
   },
-  "message": "Modelo de contribuyente actualizado exitosamente"
+  "message": "Modelo Contribuyente obtenido exitosamente"
 }
 ```
 
-### PATCH /modelo-contribuyente/:id/change-status
-**Descripción**: Cambiar solo el estado de un modelo de contribuyente
+### GET /modelo-contribuyente/by-version?version=:version
+**Descripción**: Obtener modelos contribuyentes por versión específica
+
+**Query Parameters:**
+- `version` (string): Versión del modelo (ej: "1.0.0")
+
+**Respuesta Ejemplo:**
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": 1,
+      "idCFS": 1,
+      "idStatusModelo": 2,
+      "cfsCatalogo": {
+        "id": 1,
+        "name": "Pagos Digitales",
+        "campoN1": "Servicios de Pago",
+        "campoN2": "Digital"
+      },
+      "statusModeloCatalogo": {
+        "id": 2,
+        "name": "Activo"
+      },
+      "fechaAlta": "2024-01-15",
+      "fechaActivacion": "2024-01-20",
+      "fechaInicioVersion": "2024-02-01",
+      "fechaInactivacion": "2024-12-31",
+      "version": "1.0.0",
+      "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR"],
+      "active": true,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "message": "Modelos Contribuyentes con versión 1.0.0 obtenidos exitosamente"
+}
+```
+
+### GET /modelo-contribuyente/by-cfs/:idCFS
+**Descripción**: Obtener modelos contribuyentes por CFS específico
+
+**Respuesta Ejemplo:**
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": 1,
+      "idCFS": 1,
+      "idStatusModelo": 2,
+      "cfsCatalogo": {
+        "id": 1,
+        "name": "Pagos Digitales",
+        "campoN1": "Servicios de Pago",
+        "campoN2": "Digital"
+      },
+      "statusModeloCatalogo": {
+        "id": 2,
+        "name": "Activo"
+      },
+      "fechaAlta": "2024-01-15",
+      "fechaActivacion": "2024-01-20",
+      "fechaInicioVersion": "2024-02-01",
+      "fechaInactivacion": "2024-12-31",
+      "version": "1.0.0",
+      "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR"],
+      "active": true,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "message": "Modelos Contribuyentes del CFS 1 obtenidos exitosamente"
+}
+```
+
+### GET /modelo-contribuyente/by-status/:idStatusModelo
+**Descripción**: Obtener modelos contribuyentes por estado de modelo específico
+
+**Respuesta Ejemplo:**
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": 1,
+      "idCFS": 1,
+      "idStatusModelo": 2,
+      "cfsCatalogo": {
+        "id": 1,
+        "name": "Pagos Digitales",
+        "campoN1": "Servicios de Pago",
+        "campoN2": "Digital"
+      },
+      "statusModeloCatalogo": {
+        "id": 2,
+        "name": "Activo"
+      },
+      "fechaAlta": "2024-01-15",
+      "fechaActivacion": "2024-01-20",
+      "fechaInicioVersion": "2024-02-01",
+      "fechaInactivacion": "2024-12-31",
+      "version": "1.0.0",
+      "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR"],
+      "active": true,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "message": "Modelos Contribuyentes del Status 2 obtenidos exitosamente"
+}
+```
+
+### PATCH /modelo-contribuyente/:id
+**Descripción**: Actualizar un modelo contribuyente
 
 **Body:**
 ```json
 {
-  "statusModeloId": 3
+  "version": "1.1.0",
+  "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR", "BBVA_CO"],
+  "fechaInactivacion": "2025-12-31"
 }
 ```
 
@@ -237,180 +253,263 @@ Base URL: `/modelo-contribuyente`
   "status": 200,
   "data": {
     "id": 1,
-    "name": "Cliente Premium Plus",
-    "statusModelo": {
-      "id": 3,
-      "name": "En Revisión",
-      "active": true
+    "idCFS": 1,
+    "idStatusModelo": 2,
+    "cfsCatalogo": {
+      "id": 1,
+      "name": "Pagos Digitales",
+      "campoN1": "Servicios de Pago",
+      "campoN2": "Digital"
     },
-    "updatedAt": "2025-08-20T12:00:00.000Z"
+    "statusModeloCatalogo": {
+      "id": 2,
+      "name": "Activo"
+    },
+    "fechaAlta": "2024-01-15",
+    "fechaActivacion": "2024-01-20",
+    "fechaInicioVersion": "2024-02-01",
+    "fechaInactivacion": "2025-12-31",
+    "version": "1.1.0",
+    "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR", "BBVA_CO"],
+    "active": true,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T12:00:00.000Z"
   },
-  "message": "Estado del modelo de contribuyente actualizado exitosamente"
+  "message": "Modelo Contribuyente actualizado exitosamente"
 }
 ```
 
 ### DELETE /modelo-contribuyente/:id
-**Descripción**: Eliminar un modelo de contribuyente
+**Descripción**: Eliminar un modelo contribuyente (eliminación lógica)
 
 **Respuesta Ejemplo:**
 ```json
 {
   "status": 200,
-  "message": "Modelo de contribuyente eliminado exitosamente",
-  "data": {
-    "id": 1,
-    "name": "Cliente Premium Plus"
-  }
+  "message": "Modelo Contribuyente eliminado exitosamente"
 }
 ```
 
 ## Validaciones
 
-- **name**: Requerido, máximo 100 caracteres, único por CFS
-- **description**: Opcional, máximo 500 caracteres
-- **cfsId**: Requerido, debe existir en la base de datos
-- **statusModeloId**: Requerido, debe existir y estar activo
-- **active**: Opcional, por defecto `true`
+### Campos Obligatorios
+- **idCFS**: Requerido, debe ser un número positivo y existir en la base de datos
+- **idStatusModelo**: Requerido, debe ser un número positivo y existir en la base de datos
+- **fechaAlta**: Requerida, formato YYYY-MM-DD
+- **fechaActivacion**: Requerida, formato YYYY-MM-DD
+- **fechaInicioVersion**: Requerida, formato YYYY-MM-DD
+- **version**: Requerida, string máximo 50 caracteres
+- **contribuyentes**: Requerido, array de strings no vacío
+
+### Campos Opcionales
+- **fechaInactivacion**: Opcional, formato YYYY-MM-DD
+
+### Validaciones de Negocio
+- **Secuencia de fechas**: Las fechas deben seguir la secuencia lógica:
+  - `fechaActivacion >= fechaAlta`
+  - `fechaInicioVersion >= fechaActivacion`
+  - `fechaInactivacion > fechaInicioVersion` (si se proporciona)
 
 ## Estructura de Datos
 
 ```typescript
 interface ModeloContribuyente {
   id: number;
-  name: string;
-  description?: string;
-  cfsId: number;
-  statusModeloId: number;
-  cfsItem?: CfsItem;
-  statusModelo?: StatusModeloCatalogo;
+  idCFS: number;
+  idStatusModelo: number;
+  fechaAlta: string;
+  fechaActivacion: string;
+  fechaInicioVersion: string;
+  fechaInactivacion?: string;
+  version: string;
+  contribuyentes: string[];
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
+  cfsCatalogo?: CfsCatalogo;
+  statusModeloCatalogo?: StatusModeloCatalogo;
 }
 ```
 
 ## Relaciones
 
-- **Pertenece a**: Un CFS (`CfsItem`)
-- **Tiene un**: Estado del modelo (`StatusModeloCatalogo`)
-- **A través de CFS**: Acceso a Business Unit y Geography
+- **Pertenece a**: Un CFS (`CfsCatalogo`)
+- **Pertenece a**: Un estado de modelo (`StatusModeloCatalogo`)
 
 ## Casos de Uso
 
-1. **Segmentación de clientes**: Definir diferentes tipos de contribuyentes por servicio
-2. **Gestión de ciclo de vida**: Controlar el estado de cada modelo
-3. **Análisis por CFS**: Ver qué tipos de clientes usan cada servicio
-4. **Workflows de aprobación**: Mover modelos a través de estados de validación
-5. **Reportes de negocio**: Análisis de contribuyentes por geografía/BU
+1. **Gestión de versiones**: Crear y gestionar diferentes versiones de modelos de contribuyentes
+2. **Filtrar por CFS**: Ver modelos asociados a un servicio financiero específico
+3. **Filtrar por estado**: Ver modelos según su estado actual (activo, inactivo, etc.)
+4. **Filtrar por versión**: Obtener modelos de una versión específica
+5. **Gestión del ciclo de vida**: Controlar fechas de alta, activación, inicio de versión e inactivación
+6. **Gestión de contribuyentes**: Mantener listas de entidades contribuyentes por modelo
 
-## Filtros Especializados
+## Endpoints Especializados
 
-### Por CFS (`/by-cfs/:cfsId`)
-- Ver todos los tipos de contribuyentes de un servicio específico
-- Útil para análisis de segmentación por servicio
-- Permite entender qué perfiles usan cada CFS
+### Filtro por CFS
+El endpoint `GET /modelo-contribuyente/by-cfs/:idCFS` es útil para:
+- Obtener todos los modelos asociados a un CFS específico
+- Implementar interfaces que muestren modelos por servicio
+- Análisis de modelos por servicio financiero
 
-### Por Estado (`/by-status/:statusId`)
-- Ver todos los modelos en un estado específico
-- Útil para workflows de aprobación
-- Permite gestionar modelos pendientes de revisión
+### Filtro por Estado de Modelo
+El endpoint `GET /modelo-contribuyente/by-status/:idStatusModelo` permite:
+- Filtrar modelos por su estado actual
+- Generar reportes de modelos activos/inactivos
+- Workflows de gestión por estado
 
-## Flujo de Trabajo Típico
-
-1. **Crear modelo**: Asociar a un CFS y estado inicial ("Borrador")
-2. **Desarrollar**: Actualizar descripción y características
-3. **Revisar**: Cambiar estado a "En Revisión"
-4. **Aprobar/Rechazar**: Mover a estado correspondiente
-5. **Implementar**: Estado "Implementado" para modelos en producción
-6. **Mantener**: Actualizar según evolución del negocio
+### Filtro por Versión
+El endpoint `GET /modelo-contribuyente/by-version?version=:version` facilita:
+- Comparar modelos de la misma versión
+- Gestión de releases de modelos
+- Análisis de evolución por versión
 
 ## Códigos de Error Específicos
 
-- `400`: Datos de entrada inválidos
-- `404`: Modelo de contribuyente, CFS o Status no encontrado
-- `409`: Nombre de modelo ya existe para el mismo CFS
-- `422`: Estado especificado no está activo
-- `422`: No se puede eliminar modelo en uso
+- `400`: Datos de entrada inválidos o secuencia de fechas incorrecta
+- `404`: Modelo contribuyente, CFS o Status de Modelo no encontrado
+- `422`: Error de validación de datos de entrada
 
 ## Ejemplos de Uso
 
-### Crear modelo de contribuyente
+### Crear Modelo Contribuyente
 ```bash
 curl -X POST http://localhost:3000/modelo-contribuyente \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Pyme Digital",
-    "description": "Pequeña y mediana empresa que usa servicios digitales",
-    "cfsId": 1,
-    "statusModeloId": 1
+    "idCFS": 1,
+    "idStatusModelo": 2,
+    "fechaAlta": "2024-01-15",
+    "fechaActivacion": "2024-01-20",
+    "fechaInicioVersion": "2024-02-01",
+    "fechaInactivacion": "2024-12-31",
+    "version": "1.0.0",
+    "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR"]
   }'
 ```
 
-### Obtener modelos por CFS
+### Obtener Modelos por CFS
 ```bash
 curl -X GET http://localhost:3000/modelo-contribuyente/by-cfs/1
 ```
 
-### Cambiar estado del modelo
+### Obtener Modelos por Versión
 ```bash
-curl -X PATCH http://localhost:3000/modelo-contribuyente/1/change-status \
+curl -X GET http://localhost:3000/modelo-contribuyente/by-version?version=1.0.0
+```
+
+### Actualizar Modelo Contribuyente
+```bash
+curl -X PATCH http://localhost:3000/modelo-contribuyente/1 \
   -H "Content-Type: application/json" \
   -d '{
-    "statusModeloId": 2
+    "version": "1.1.0",
+    "contribuyentes": ["BBVA_ES", "BBVA_MX", "BBVA_AR", "BBVA_CO"]
   }'
 ```
 
-### Obtener modelos por estado
+### Obtener todos los Modelos Contribuyentes
 ```bash
-curl -X GET http://localhost:3000/modelo-contribuyente/by-status/2
+curl -X GET http://localhost:3000/modelo-contribuyente
 ```
 
 ## Estructura de Base de Datos
 
 ```sql
-CREATE TABLE modelo_contribuyentes (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  description TEXT,
-  cfs_id INTEGER NOT NULL REFERENCES cfs_catalogos(id),
-  status_modelo_id INTEGER NOT NULL REFERENCES status_modelo_catalogos(id),
-  active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(name, cfs_id) -- Nombre único por CFS
+CREATE TABLE IF NOT EXISTS modelo_contribuyentes (
+    id SERIAL PRIMARY KEY,
+    id_cfs INTEGER NOT NULL,
+    id_status_modelo INTEGER NOT NULL,
+    fecha_alta DATE NOT NULL,
+    fecha_activacion DATE NOT NULL,
+    fecha_inicio_version DATE NOT NULL,
+    fecha_inactivacion DATE,
+    version VARCHAR(50) NOT NULL,
+    contribuyentes TEXT[] NOT NULL,
+    active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Foreign key constraints
+    CONSTRAINT fk_modelo_cfs_id FOREIGN KEY (id_cfs) REFERENCES cfs_catalogos(id) ON DELETE CASCADE,
+    CONSTRAINT fk_modelo_status_id FOREIGN KEY (id_status_modelo) REFERENCES status_modelo_catalogos(id) ON DELETE CASCADE,
+    
+    -- Check constraints para validar secuencia de fechas
+    CONSTRAINT chk_fecha_activacion CHECK (fecha_activacion >= fecha_alta),
+    CONSTRAINT chk_fecha_inicio_version CHECK (fecha_inicio_version >= fecha_activacion),
+    CONSTRAINT chk_fecha_inactivacion CHECK (fecha_inactivacion IS NULL OR fecha_inactivacion > fecha_inicio_version)
 );
+
+-- Crear índices para mejorar performance
+CREATE INDEX IF NOT EXISTS idx_modelo_cfs_id ON modelo_contribuyentes(id_cfs);
+CREATE INDEX IF NOT EXISTS idx_modelo_status_id ON modelo_contribuyentes(id_status_modelo);
+CREATE INDEX IF NOT EXISTS idx_modelo_version ON modelo_contribuyentes(version);
+CREATE INDEX IF NOT EXISTS idx_modelo_active ON modelo_contribuyentes(active);
 ```
 
-## Casos de Uso de Negocio
+## Flujos de Trabajo Típicos
 
-### 1. Segmentación por Servicio
-```json
-// Para CFS "Pagos Digitales"
-{
-  "name": "Cliente Retail",
-  "description": "Cliente individual con pagos frecuentes"
-}
-{
-  "name": "Cliente Corporate",
-  "description": "Empresa con alto volumen de pagos"
-}
+### 1. Creación de Nuevo Modelo
+1. Seleccionar CFS de la lista disponible
+2. Seleccionar estado de modelo
+3. Definir fechas del ciclo de vida
+4. Especificar versión y contribuyentes
+5. Crear modelo con validaciones automáticas
+
+### 2. Gestión por CFS
+1. Listar todos los CFS disponibles
+2. Seleccionar CFS específico
+3. Obtener todos los modelos asociados using `/by-cfs/:idCFS`
+4. Analizar o gestionar modelos específicos
+
+### 3. Gestión por Versión
+1. Identificar versión objetivo
+2. Obtener todos los modelos de esa versión using `/by-version?version=:version`
+3. Comparar o actualizar modelos de la misma versión
+
+## Características Implementadas
+
+### Validaciones
+- **Secuencia de fechas**: Validación automática del orden lógico de fechas
+- **Relaciones válidas**: Verifica que CFS y Status de Modelo existan
+- **Formato de fechas**: Validación estricta del formato YYYY-MM-DD
+- **Contribuyentes**: Validación de array no vacío
+
+### Relaciones
+- **ManyToOne** con `CfsCatalogo`: Cada modelo pertenece a un CFS
+- **ManyToOne** con `StatusModeloCatalogo`: Cada modelo tiene un estado
+- **Eager loading**: Incluye automáticamente información de CFS y estado en consultas
+
+### Manejo de Errores
+- Excepciones personalizadas para diferentes tipos de error
+- Logging detallado para debugging
+- Respuestas consistentes con código de estado HTTP apropiado
+- Validación de secuencia de fechas con mensajes específicos
+
+### Funcionalidades de Filtrado
+- **Por CFS**: Filtrar modelos de un servicio específico
+- **Por Estado**: Filtrar modelos por su estado actual
+- **Por Versión**: Filtrar modelos de una versión específica
+- **Eliminación lógica**: Los modelos se marcan como inactivos en lugar de eliminarse
+
+## Estructura de Archivos
+
+```
+src/api/modelo-contribuyente/
+├── dto/
+│   ├── create-modelo-contribuyente.dto.ts
+│   └── update-modelo-contribuyente.dto.ts
+├── entities/
+│   └── modelo-contribuyente.entity.ts
+├── exceptions/
+│   └── modelo-contribuyente.exceptions.ts
+├── seeds/
+├── modelo-contribuyente.controller.ts
+├── modelo-contribuyente.service.ts
+├── modelo-contribuyente.module.ts
+├── index.ts
+└── README.md
 ```
 
-### 2. Análisis de Riesgo
-```json
-// Para CFS "Bizum"
-{
-  "name": "Usuario Básico",
-  "description": "Transferencias ocasionales, límites bajos"
-}
-{
-  "name": "Usuario Avanzado", 
-  "description": "Uso frecuente, límites altos"
-}
-```
-
-### 3. Compliance y Regulación
-```json
-// Estados típicos para compliance
-"En Validación KYC" -> "Aprobado Regulatorio" -> "Implementado"
-```
+El módulo está integrado en el sistema y listo para usar con todas las validaciones y funcionalidades implementadas.
