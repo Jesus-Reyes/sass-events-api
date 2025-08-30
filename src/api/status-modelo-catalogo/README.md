@@ -1,20 +1,22 @@
 # Status Modelo Catalogo API
 
-API para la gestión del catálogo de estados de modelos del sistema SASS.
+API para la gestión del catálogo de estados de modelo del sistema SASS.
 
 ## Descripción
+
+Este módulo proporciona endpoints para gestionar los estados que pueden tener los modelos en el sistema. Permite clasificar los modelos según su estado actual (ej: "En desarrollo", "Activo", "Pausado", "Retirado").
 
 ## Endpoints
 
 Base URL: `/status-modelo-catalogo`
 
 ### POST /status-modelo-catalogo
-**Descripción**: Crear un nuevo status para modelos
+**Descripción**: Crear un nuevo estado de modelo
 
 **Body:**
 ```json
 {
-  "name": "En Revisión",
+  "name": "En desarrollo",
   "active": true
 }
 ```
@@ -25,12 +27,12 @@ Base URL: `/status-modelo-catalogo`
   "status": 201,
   "data": {
     "id": 1,
-    "name": "En Revisión",
+    "name": "En desarrollo",
     "active": true,
-    "createdAt": "2025-08-20T10:00:00.000Z",
-    "updatedAt": "2025-08-20T10:00:00.000Z"
+    "createdAt": "2025-08-30T10:15:00.000Z",
+    "updatedAt": "2025-08-30T10:15:00.000Z"
   },
-  "message": "Status Modelo creado exitosamente"
+  "message": "Status modelo creado exitosamente"
 }
 ```
 

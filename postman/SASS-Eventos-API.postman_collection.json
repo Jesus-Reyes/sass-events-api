@@ -549,6 +549,296 @@
       ]
     },
     {
+      "name": "Service Owners Catalogo",
+      "item": [
+        {
+          "name": "Crear Service Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Juan Carlos Pérez\",\n  \"email\": \"juan.perez@bbva.com\",\n  \"area\": \"Digital Banking\",\n  \"cargo\": \"Senior Software Engineer\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo"]
+            },
+            "description": "Crear un nuevo service owner en el catálogo"
+          }
+        },
+        {
+          "name": "Obtener todos los Service Owners",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo"]
+            },
+            "description": "Obtener listado completo de service owners"
+          }
+        },
+        {
+          "name": "Obtener Service Owners Activos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo", "active"]
+            },
+            "description": "Obtener solo los service owners activos para dropdowns"
+          }
+        },
+        {
+          "name": "Obtener Service Owners por Área",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo/by-area/Digital Banking",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo", "by-area", "Digital Banking"]
+            },
+            "description": "Filtrar service owners por área específica"
+          }
+        },
+        {
+          "name": "Obtener Service Owner por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo/{{serviceOwnerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo", "{{serviceOwnerId}}"]
+            },
+            "description": "Obtener un service owner específico por su ID"
+          }
+        },
+        {
+          "name": "Actualizar Service Owner",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Juan Carlos Pérez López\",\n  \"area\": \"Innovation Lab\",\n  \"cargo\": \"Tech Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo/{{serviceOwnerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo", "{{serviceOwnerId}}"]
+            },
+            "description": "Actualizar información de un service owner"
+          }
+        },
+        {
+          "name": "Toggle Estado Activo Service Owner",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo/{{serviceOwnerId}}/toggle-active",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo", "{{serviceOwnerId}}", "toggle-active"]
+            },
+            "description": "Alternar estado activo/inactivo del service owner"
+          }
+        },
+        {
+          "name": "Eliminar Service Owner",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo/{{serviceOwnerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo", "{{serviceOwnerId}}"]
+            },
+            "description": "Eliminar un service owner del catálogo"
+          }
+        },
+        {
+          "name": "Filtrar Service Owners con Query Params",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service-owners-catalogo?active=true&area=Digital Banking",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-owners-catalogo"],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "true",
+                  "description": "Filtrar solo activos"
+                },
+                {
+                  "key": "area",
+                  "value": "Digital Banking",
+                  "description": "Filtrar por área específica"
+                }
+              ]
+            },
+            "description": "Ejemplo de filtrado usando query parameters"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Partnership Catalogo",
+      "item": [
+        {
+          "name": "Crear Partnership",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"External Payment Provider\",\n  \"description\": \"Proveedor externo de servicios de pago\",\n  \"tipo\": \"Externo\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo"]
+            },
+            "description": "Crear un nuevo partnership en el catálogo"
+          }
+        },
+        {
+          "name": "Obtener todos los Partnerships",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo"]
+            },
+            "description": "Obtener listado completo de partnerships"
+          }
+        },
+        {
+          "name": "Obtener Partnerships Activos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo", "active"]
+            },
+            "description": "Obtener solo los partnerships activos para dropdowns"
+          }
+        },
+        {
+          "name": "Obtener Partnerships por Tipo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo/by-type/Externo",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo", "by-type", "Externo"]
+            },
+            "description": "Filtrar partnerships por tipo específico (Interno, Externo, No Aplica)"
+          }
+        },
+        {
+          "name": "Obtener Partnership por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo/{{partnershipId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo", "{{partnershipId}}"]
+            },
+            "description": "Obtener un partnership específico por su ID"
+          }
+        },
+        {
+          "name": "Actualizar Partnership",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Enhanced Payment Provider\",\n  \"description\": \"Proveedor mejorado de servicios de pago con nuevas funcionalidades\",\n  \"tipo\": \"Externo\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo/{{partnershipId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo", "{{partnershipId}}"]
+            },
+            "description": "Actualizar información de un partnership"
+          }
+        },
+        {
+          "name": "Toggle Estado Activo Partnership",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo/{{partnershipId}}/toggle-active",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo", "{{partnershipId}}", "toggle-active"]
+            },
+            "description": "Alternar estado activo/inactivo del partnership"
+          }
+        },
+        {
+          "name": "Eliminar Partnership",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo/{{partnershipId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo", "{{partnershipId}}"]
+            },
+            "description": "Eliminar un partnership del catálogo"
+          }
+        },
+        {
+          "name": "Filtrar Partnerships con Query Params",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/partnership-catalogo?active=true&tipo=Interno",
+              "host": ["{{baseUrl}}"],
+              "path": ["partnership-catalogo"],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "true",
+                  "description": "Filtrar solo activos"
+                },
+                {
+                  "key": "tipo",
+                  "value": "Interno",
+                  "description": "Filtrar por tipo específico"
+                }
+              ]
+            },
+            "description": "Ejemplo de filtrado usando query parameters"
+          }
+        }
+      ]
+    },
+    {
       "name": "Modelo Contribuyente",
       "item": [
         {
@@ -1259,7 +1549,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombreDashboard\": \"Dashboard Prueba API\",\n  \"idBU\": 1,\n  \"ordenTablero\": 1,\n  \"idDisciplina\": 1,\n  \"ordenDisciplinas\": [1, 2],\n  \"clasificacionCriticidad\": true,\n  \"idStatusModelo\": 1,\n  \"idStatusMedicion\": 1,\n  \"idItemsCfs\": [1, 2],\n  \"ordenCfs\": [1, 2],\n  \"perfil\": [\"Analista\", \"Manager\"],\n  \"fechaInicio\": \"2024-01-01\",\n  \"fechaFin\": \"2024-12-31\"\n}"
+              "raw": "{\n  \"nombreDashboard\": \"Dashboard Prueba API\",\n  \"idBU\": 1,\n  \"ordenTablero\": 1,\n  \"idDisciplina\": 1,\n  \"ordenDisciplinas\": [1, 2],\n  \"clasificacionCriticidad\": true,\n  \"idStatusModelo\": 1,\n  \"idStatusMedicion\": 1,\n  \"idItemsCfs\": [1, 2],\n  \"ordenCfs\": [1, 2],\n  \"perfil\": [\"admin\", \"viewer\"],\n  \"fechaInicio\": \"2025-01-01\",\n  \"fechaFin\": \"2025-12-31\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/dashboard",
@@ -1366,7 +1656,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"nombreDashboard\": \"Dashboard Riesgo Operacional\",\n  \"idBU\": 1,\n  \"ordenTablero\": 5,\n  \"idDisciplina\": 1,\n  \"ordenDisciplinas\": [1, 2, 3],\n  \"clasificacionCriticidad\": true,\n  \"idStatusModelo\": 1,\n  \"idStatusMedicion\": 2,\n  \"idItemsCfs\": [1, 2, 3],\n  \"ordenCfs\": [1, 2, 3],\n  \"perfil\": [\"Risk Analyst\", \"Operations Manager\", \"Compliance Officer\"],\n  \"fechaInicio\": \"2024-03-01\",\n  \"fechaFin\": \"2024-11-30\"\n}"
+                  "raw": "{\n  \"nombreDashboard\": \"Dashboard Riesgo Operacional\",\n  \"idBU\": 1,\n  \"ordenTablero\": 5,\n  \"idDisciplina\": 1,\n  \"ordenDisciplinas\": [1, 2, 3],\n  \"clasificacionCriticidad\": true,\n  \"idStatusModelo\": 1,\n  \"idStatusMedicion\": 2,\n  \"idItemsCfs\": [1, 2, 3],\n  \"ordenCfs\": [1, 2, 3],\n  \"perfil\": [\"Risk Analyst\", \"Operations Manager\", \"Compliance Officer\"],\n  \"fechaInicio\": \"2025-03-01\",\n  \"fechaFin\": \"2025-11-30\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/dashboard",
@@ -1400,7 +1690,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"nombreDashboard\": \"Dashboard Riesgo Operacional - Actualizado\",\n  \"clasificacionCriticidad\": false,\n  \"fechaFin\": \"2025-03-31\"\n}"
+                  "raw": "{\n  \"nombreDashboard\": \"Dashboard Riesgo Operacional - Actualizado\",\n  \"clasificacionCriticidad\": false,\n  \"fechaFin\": \"2026-03-31\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/dashboard/{{dashboardId}}",
